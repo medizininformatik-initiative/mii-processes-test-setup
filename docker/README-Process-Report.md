@@ -104,7 +104,7 @@ curl -H "Accept: application/xml+fhir" \
 --cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
 --pass password \
-https://hrp/fhir/Bundle?identifier=http://dsf.dev/sid/organization-identifier|Test_DIC1
+https://hrp/fhir/Bundle?identifier=http://medizininformatik-initiative.de/sid/cds-report-identifier|Test_DIC1
 ```
 
 Console 5: Stop everything
