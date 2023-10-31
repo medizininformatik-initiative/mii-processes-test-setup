@@ -70,7 +70,7 @@ services:
         read_only: true
 
   dic1-fhir:
-    image: ghcr.io/datasharingframework/fhir:1.2.0
+    image: datasharingframework/fhir
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -138,7 +138,7 @@ services:
       - proxy
 
   dic1-bpe:
-    image: ghcr.io/datasharingframework/bpe:1.2.0
+    image: datasharingframework/bpe
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -228,7 +228,7 @@ services:
           - dic1-fhir-store
 
   dic2-fhir:
-    image: ghcr.io/datasharingframework/fhir:1.2.0
+    image: datasharingframework/fhir
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -296,7 +296,7 @@ services:
       - proxy
 
   dic2-bpe:
-    image: ghcr.io/datasharingframework/bpe:1.2.0
+    image: datasharingframework/bpe
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -385,7 +385,7 @@ services:
           - dic2-fhir-store
 
   dms-fhir:
-    image: ghcr.io/datasharingframework/fhir:1.2.0
+    image: datasharingframework/fhir
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -453,7 +453,7 @@ services:
       - proxy
 
   dms-bpe:
-    image: ghcr.io/datasharingframework/bpe:1.2.0
+    image: datasharingframework/bpe
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -543,7 +543,7 @@ services:
           - dms-fhir-store
 
   hrp-fhir:
-    image: ghcr.io/datasharingframework/fhir:1.2.0
+    image: datasharingframework/fhir
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -611,7 +611,7 @@ services:
       - proxy
 
   hrp-bpe:
-    image: ghcr.io/datasharingframework/bpe:1.2.0
+    image: datasharingframework/bpe
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
