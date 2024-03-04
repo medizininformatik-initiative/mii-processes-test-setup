@@ -16,8 +16,8 @@ import org.bouncycastle.pkcs.PKCSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.rwh.utils.crypto.CertificateHelper;
-import de.rwh.utils.crypto.io.PemIo;
+import de.hsheilbronn.mi.utils.crypto.CertificateHelper;
+import de.hsheilbronn.mi.utils.crypto.io.PemIo;
 
 public class RsaKeyPairGenerator
 {

@@ -41,13 +41,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Streams;
 
-import de.rwh.utils.crypto.CertificateAuthority;
-import de.rwh.utils.crypto.CertificateAuthority.CertificateAuthorityBuilder;
-import de.rwh.utils.crypto.CertificateHelper;
-import de.rwh.utils.crypto.CertificationRequestBuilder;
-import de.rwh.utils.crypto.io.CertificateWriter;
-import de.rwh.utils.crypto.io.CsrIo;
-import de.rwh.utils.crypto.io.PemIo;
+import de.hsheilbronn.mi.utils.crypto.CertificateAuthority;
+import de.hsheilbronn.mi.utils.crypto.CertificateAuthority.CertificateAuthorityBuilder;
+import de.hsheilbronn.mi.utils.crypto.CertificateHelper;
+import de.hsheilbronn.mi.utils.crypto.CertificationRequestBuilder;
+import de.hsheilbronn.mi.utils.crypto.io.CertificateWriter;
+import de.hsheilbronn.mi.utils.crypto.io.CsrIo;
+import de.hsheilbronn.mi.utils.crypto.io.PemIo;
 
 public class CertificateGenerator
 {
@@ -55,9 +55,12 @@ public class CertificateGenerator
 
 	private static final char[] CERT_PASSWORD = "password".toCharArray();
 
-	private static final String[] SERVER_COMMON_NAMES = { "localhost", "hrp", "dms", "dic1", "dic2" };
+	private static final String SERVER_COMMON_NAME = "localhost";
 	private static final String[] CLIENT_COMMON_NAMES = { "hrp-client", "dms-client", "dic1-client", "dic2-client",
 			"Webbrowser Test User" };
+
+	private static final List<String> DNS_NAMES = Arrays.asList("localhost", "host.docker.internal", "fhir", "bpe",
+			"dic1", "dic2", "dms", "hrp");
 
 	private static final BouncyCastleProvider PROVIDER = new BouncyCastleProvider();
 
@@ -75,7 +78,7 @@ public class CertificateGenerator
 
 		private final byte[] certificateSha512Thumbprint;
 
-		CertificateFiles(String commonName, KeyPair keyPair, Path keyPairPrivateKeyFile, X509Certificate certificate,
+		CertificateFiles(String commonName, KeyPair keyPair, X509Certificate certificate,
 				byte[] certificateSha512Thumbprint)
 		{
 			this.commonName = commonName;
@@ -107,7 +110,7 @@ public class CertificateGenerator
 	public void generateCertificates()
 	{
 		ca = initCA();
-		serverCertificateFiles = createCert(CertificateType.SERVER, "localhost", List.of(SERVER_COMMON_NAMES));
+		serverCertificateFiles = createCert(CertificateType.SERVER, SERVER_COMMON_NAME, DNS_NAMES);
 		clientCertificateFilesByCommonName = Arrays.stream(CLIENT_COMMON_NAMES)
 				.map(commonName -> createCert(CertificateType.CLIENT, commonName, Collections.emptyList()))
 				.collect(Collectors.toMap(CertificateFiles::getCommonName, Function.identity()));
@@ -251,7 +254,7 @@ public class CertificateGenerator
 		X509Certificate certificate = signOrReadCertificate(certificatePemFile, certificateRequest,
 				keyPair.getPrivate(), commonName, certificateType);
 
-		return new CertificateFiles(commonName, keyPair, privateKeyFile, certificate,
+		return new CertificateFiles(commonName, keyPair, certificate,
 				calculateSha512CertificateThumbprint(certificate));
 	}
 
@@ -329,16 +332,12 @@ public class CertificateGenerator
 	{
 		try
 		{
-			switch (certificateType)
+			return switch (certificateType)
 			{
-				case CLIENT:
-					return CertificationRequestBuilder.createClientCertificationRequest(subject, keyPair);
-				case SERVER:
-					return CertificationRequestBuilder.createServerCertificationRequest(subject, keyPair, null,
-							dnsNames);
-				default:
-					throw new RuntimeException("Unknown certificate type " + certificateType);
-			}
+				case CLIENT -> CertificationRequestBuilder.createClientCertificationRequest(subject, keyPair);
+				case SERVER ->
+					CertificationRequestBuilder.createServerCertificationRequest(subject, keyPair, null, dnsNames);
+			};
 		}
 		catch (NoSuchAlgorithmException | OperatorCreationException | IllegalStateException | IOException e)
 		{
