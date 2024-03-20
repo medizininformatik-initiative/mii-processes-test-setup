@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,6 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.medizininformatik_initiative.processes.test.data.generator.CertificateGenerator.CertificateFiles;
+
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_EXECUTE;
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_WRITE;
 
 public class EnvGenerator
 {
@@ -57,7 +62,7 @@ public class EnvGenerator
 				new EnvEntry("DMS_" + BUNDLE_USER_THUMBPRINT, dmsUserThumbprints),
 				new EnvEntry("HRP_" + BUNDLE_USER_THUMBPRINT, hrpUserThumbprints));
 
-		writeEnvFile(Paths.get("docker/.env"), entries);
+		writeEnvFile(Paths.get("docker/.env"), Paths.get("docker/.env.default"), entries);
 	}
 
 	private Stream<String> filterAndMapToThumbprint(Map<String, CertificateFiles> clientCertificateFilesByCommonName,
@@ -69,14 +74,50 @@ public class EnvGenerator
 				.map(CertificateFiles::getCertificateSha512ThumbprintHex);
 	}
 
-	private void writeEnvFile(Path target, List<? extends EnvEntry> entries)
+	private void writeEnvFile(Path target, Path template, List<? extends EnvEntry> entries)
 	{
 		StringBuilder builder = new StringBuilder();
 
-		for (int i = 0; i < entries.size(); i++)
+		if (Files.exists(target))
 		{
-			EnvEntry entry = entries.get(i);
+			if (Files.isReadable(target))
+			{
+				try
+				{
+					builder.append(Files.readString(target));
+				}
+				catch (IOException e)
+				{
+					logger.error("Error while reading existing .env file " + target.toString(), e);
+					throw new RuntimeException(e);
+				}
+			}
+			else
+			{
+				logger.error("No permission reading .env file " + target.toString());
+				throw new RuntimeException("No permission reading .env file " + target.toString());
+			}
+		}
+		else if (Files.exists(template) && Files.isReadable(template))
+		{
+			try
+			{
+				builder.append(Files.readString(template));
+			}
+			catch (IOException e)
+			{
+				logger.error("Error while reading .env template file " + template.toString(), e);
+				throw new RuntimeException(e);
+			}
+		}
 
+		for (EnvEntry entry : entries)
+		{
+			int startIndex = builder.indexOf(entry.userThumbprintsVariableName);
+			if (startIndex >= 0)
+			{
+				builder.replace(startIndex, builder.indexOf("\n", startIndex) + 1, "");
+			}
 			builder.append(entry.userThumbprintsVariableName);
 			builder.append('=');
 			builder.append(entry.userThumbprints.collect(Collectors.joining(",")));
@@ -87,6 +128,7 @@ public class EnvGenerator
 		{
 			logger.info("Writing .env file to {}", target.toString());
 			Files.writeString(target, builder.toString());
+			Files.setPosixFilePermissions(target, Set.of(OTHERS_READ, OTHERS_WRITE, OTHERS_EXECUTE));
 		}
 		catch (IOException e)
 		{
