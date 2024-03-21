@@ -1,10 +1,21 @@
 version: '3.8'
 services:
+
+  init:
+    image: maven:3.9
+    command: mvn -f /project clean package
+    volumes:
+      - type: bind
+        source: ./..
+        target: /project
+    profiles:
+      - init
+
   proxy:
     image: nginx:1.21
     restart: "no"
     ports:
-      - 127.0.0.1:443:443
+      - ${DEV_DSF_PROXY_LISTEN_ADDRESS:-127.0.0.1:443}:443
     secrets:
       - proxy_certificate_and_int_cas.pem
       - proxy_certificate_private_key.pem
@@ -27,7 +38,7 @@ services:
         ipv4_address: 172.20.0.98
       hrp-fhir-frontend:
         ipv4_address: 172.20.0.114
-      internet:
+      common-net:
         aliases:
           - dic1
           - dic2
@@ -70,7 +81,7 @@ services:
         read_only: true
 
   dic1-fhir:
-    image: datasharingframework/fhir
+    image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -78,7 +89,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5000:5000
+      - ${DEV_DSF_FHIR_LISTEN_ADDRESS_DIC_1:-127.0.0.1:5000}:5000
     secrets:
       - db_liquibase.password
       - db_dic1_fhir_user.password
@@ -132,13 +143,13 @@ services:
       dic1-fhir-frontend:
         ipv4_address: 172.20.0.67
       dic1-fhir-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - proxy
 
   dic1-bpe:
-    image: datasharingframework/bpe
+    image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -146,7 +157,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5010:5010
+      - ${DEV_DSF_BPE_DEBUG_LISTEN_ADDRESS_DIC_1:-127.0.0.1:5010}:5000
     secrets:
       - db_liquibase.password
       - db_dic1_bpe_user.password
@@ -158,7 +169,7 @@ services:
       - app_client_certificate_private_key.pem.password
     volumes:
       - type: bind
-        source: ./dic1/bpe/process
+        source: ${DEV_DSF_BPE_PROCESS_DIR_DIC_1:-./dic1/bpe/process}
         target: /opt/bpe/process
         read_only: true
       - type: bind
@@ -166,7 +177,7 @@ services:
         target: /opt/bpe/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000
       DEV_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       DEV_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_dic1_bpe_user.password
       DEV_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_dic1_bpe_user_camunda.password
@@ -197,7 +208,7 @@ services:
     networks:
       dic1-bpe-frontend:
       dic1-bpe-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - dic1-fhir
@@ -207,7 +218,7 @@ services:
     image: hapiproject/hapi:v6.6.0
     restart: "no"
     ports:
-      - 127.0.0.1:8080:8080
+      - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_1:-127.0.0.1:8080}:8080
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
@@ -219,7 +230,7 @@ services:
     image: samply/blaze:0.22.1
     restart: "no"
     ports:
-      - 127.0.0.1:8080:8080
+      - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_1:-127.0.0.1:8080}:8080
     environment:
       TZ: Europe/Berlin
     networks:
@@ -228,7 +239,7 @@ services:
           - dic1-fhir-store
 
   dic2-fhir:
-    image: datasharingframework/fhir
+    image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -236,7 +247,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5001:5001
+      - ${DEV_DSF_FHIR_DEBUG_LISTEN_ADDRESS_DIC_2:-127.0.0.1:5001}:5001
     secrets:
       - db_liquibase.password
       - db_dic2_fhir_user.password
@@ -290,13 +301,13 @@ services:
       dic2-fhir-frontend:
         ipv4_address: 172.20.0.83
       dic2-fhir-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - proxy
 
   dic2-bpe:
-    image: datasharingframework/bpe
+    image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -304,7 +315,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5011:5011
+      - ${DEV_DSF_BPE_DEBUG_LISTEN_ADDRESS_DIC_2:-127.0.0.1:5011}:5011
     secrets:
       - db_liquibase.password
       - db_dic2_bpe_user.password
@@ -316,7 +327,7 @@ services:
       - app_client_certificate_private_key.pem.password
     volumes:
       - type: bind
-        source: ./dic2/bpe/process
+        source: ${DEV_DSF_BPE_PROCESS_DIR_DIC_2:-./dic2/bpe/process}
         target: /opt/bpe/process
         read_only: true
       - type: bind
@@ -354,7 +365,7 @@ services:
     networks:
       dic2-bpe-frontend:
       dic2-bpe-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - dic2-fhir
@@ -364,7 +375,7 @@ services:
     image: hapiproject/hapi:v6.1.0
     restart: "no"
     ports:
-      - 127.0.0.1:8081:8080
+      - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_2:-127.0.0.1:8081}:8080
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
@@ -376,7 +387,7 @@ services:
     image: samply/blaze:0.22.1
     restart: "no"
     ports:
-      - 127.0.0.1:8081:8080
+      - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_2:-127.0.0.1:8081}:8080
     environment:
       TZ: Europe/Berlin
     networks:
@@ -385,7 +396,7 @@ services:
           - dic2-fhir-store
 
   dms-fhir:
-    image: datasharingframework/fhir
+    image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -393,7 +404,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5002:5002
+      - ${DEV_DSF_FHIR_DEBUG_LISTEN_ADDRESS_DMS:-127.0.0.1:5002}:5000
     secrets:
       - db_liquibase.password
       - db_dms_fhir_user.password
@@ -412,7 +423,7 @@ services:
         target: /opt/fhir/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5002
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000
       DEV_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       DEV_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_dms_fhir_user.password
       DEV_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_dms_fhir_user_permanent_delete.password
@@ -447,13 +458,13 @@ services:
       dms-fhir-frontend:
         ipv4_address: 172.20.0.99
       dms-fhir-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - proxy
 
   dms-bpe:
-    image: datasharingframework/bpe
+    image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -461,7 +472,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5012:5012
+      - ${DEV_DSF_BPE_DEBUG_LISTEN_ADDRESS_DMS:-127.0.0.1:5012}:5000
     secrets:
       - db_liquibase.password
       - db_dms_bpe_user.password
@@ -475,7 +486,7 @@ services:
       - dms_public_key.pem
     volumes:
       - type: bind
-        source: ./dms/bpe/process
+        source: ${DEV_DSF_BPE_PROCESS_DIR_DMS:-./dms/bpe/process}
         target: /opt/bpe/process
         read_only: true
       - type: bind
@@ -483,7 +494,7 @@ services:
         target: /opt/bpe/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5012
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000
       DEV_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       DEV_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_dms_bpe_user.password
       DEV_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_dms_bpe_user_camunda.password
@@ -512,7 +523,7 @@ services:
     networks:
       dms-bpe-frontend:
       dms-bpe-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - dms-fhir
@@ -522,7 +533,7 @@ services:
     image: hapiproject/hapi:v6.6.0
     restart: "no"
     ports:
-      - 127.0.0.1:8082:8080
+      - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DMS:-127.0.0.1:8082}:8080
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
@@ -534,7 +545,7 @@ services:
     image: samply/blaze:0.22.1
     restart: "no"
     ports:
-      - 127.0.0.1:8082:8080
+      - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DMS:-127.0.0.1:8082}:8080
     environment:
       TZ: Europe/Berlin
     networks:
@@ -543,7 +554,7 @@ services:
           - dms-fhir-store
 
   hrp-fhir:
-    image: datasharingframework/fhir
+    image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
@@ -551,7 +562,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5003:5003
+      - ${DEV_DSF_FHIR_DEBUG_LISTEN_ADDRESS_HRP:-127.0.0.1:5003}:5000
     secrets:
       - db_liquibase.password
       - db_hrp_fhir_user.password
@@ -570,7 +581,7 @@ services:
         target: /opt/fhir/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5003
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000
       DEV_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       DEV_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_hrp_fhir_user.password
       DEV_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_hrp_fhir_user_permanent_delete.password
@@ -605,13 +616,13 @@ services:
       hrp-fhir-frontend:
         ipv4_address: 172.20.0.115
       hrp-fhir-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - proxy
 
   hrp-bpe:
-    image: datasharingframework/bpe
+    image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
@@ -619,7 +630,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5013:5013
+      - ${DEV_DSF_BPE_DEBUG_LISTEN_ADDRESS_HRP:-127.0.0.1:5013}:5000
     secrets:
       - db_liquibase.password
       - db_hrp_bpe_user.password
@@ -631,7 +642,7 @@ services:
       - app_client_certificate_private_key.pem.password
     volumes:
       - type: bind
-        source: ./hrp/bpe/process
+        source: ${DEV_DSF_BPE_PROCESS_DIR_HRP:-./hrp/bpe/process}
         target: /opt/bpe/process
         read_only: true
       - type: bind
@@ -639,7 +650,7 @@ services:
         target: /opt/bpe/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5013
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000
       DEV_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       DEV_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_hrp_bpe_user.password
       DEV_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_hrp_bpe_user_camunda.password
@@ -663,7 +674,7 @@ services:
     networks:
       hrp-bpe-frontend:
       hrp-bpe-backend:
-      internet:
+      common-net:
     depends_on:
       - db
       - hrp-fhir
@@ -750,7 +761,7 @@ secrets:
 
 
 networks:
-  internet:
+  common-net:
   dic1-fhir-frontend:
     driver: bridge
     ipam:
