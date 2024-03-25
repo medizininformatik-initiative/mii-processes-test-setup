@@ -195,20 +195,7 @@ services:
               - ADMIN
       DEV_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC1
       DEV_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic1/fhir
-      DEV_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_coordinateDataSharing|1.0,
-        medizininformatik-initiativede_mergeDataSharing|1.0,
-        medizininformatik-initiativede_dataReceive|1.0,
-        medizininformatik-initiativede_reportReceive|1.0,
-        medizininformatik-initiativede_reportReceive|1.1
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
-      # DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_HRP_IDENTIFIER: 'Test_HRP'
-      DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_DATALOGGINGENABLED: 'true'
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DIC_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DIC_FHIR_DATALOGGINGENABLED: 'true'
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_DATALOGGINGENABLED: 'true'
     networks:
       dic1-bpe-frontend:
         ipv4_address: 172.20.0.75
@@ -361,19 +348,7 @@ services:
               - ADMIN
       DEV_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC2
       DEV_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic2/fhir
-      DEV_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_coordinateDataSharing|1.0,
-        medizininformatik-initiativede_mergeDataSharing|1.0,
-        medizininformatik-initiativede_dataReceive|1.0,
-        medizininformatik-initiativede_reportReceive|1.0,
-        medizininformatik-initiativede_reportReceive|1.1
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
-      DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_DATALOGGINGENABLED: 'true'
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DIC_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DIC_FHIR_DATALOGGINGENABLED: 'true'
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_DATALOGGINGENABLED: 'true'
     networks:
       dic2-bpe-frontend:
         ipv4_address: 172.20.0.91
@@ -528,17 +503,7 @@ services:
               - ADMIN
       DEV_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_dms
       DEV_DSF_BPE_FHIR_SERVER_BASE_URL: https://dms/fhir
-      DEV_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_coordinateDataSharing|1.0,
-        medizininformatik-initiativede_executeDataSharing|1.0,
-        medizininformatik-initiativede_dataSend|1.0
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DMS_FHIR_SERVER_BASE_URL: http://dms-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DMS_FHIR_DATALOGGINGENABLED: 'true'
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DMS_FHIR_SERVER_BASE_URL: http://dms-fhir-store:8080/fhir
-      DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DMS_FHIR_DATALOGGINGENABLED: 'true'
-      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PRIVATE_KEY: /run/secrets/dms_private_key.pem
-      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PUBLIC_KEY: /run/secrets/dms_public_key.pem
     networks:
       dms-bpe-frontend:
         ipv4_address: 172.20.0.107
@@ -691,13 +656,6 @@ services:
               - ADMIN
       DEV_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
       DEV_DSF_BPE_FHIR_SERVER_BASE_URL: https://hrp/fhir
-      DEV_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_executeDataSharing|1.0,
-        medizininformatik-initiativede_mergeDataSharing|1.0,
-        medizininformatik-initiativede_reportAutostart|1.0,
-        medizininformatik-initiativede_reportAutostart|1.1,
-        medizininformatik-initiativede_reportSend|1.0,
-        medizininformatik-initiativede_reportSend|1.1
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
     networks:
       hrp-bpe-frontend:
