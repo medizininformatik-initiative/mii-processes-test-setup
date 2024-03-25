@@ -41,13 +41,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Streams;
 
-import de.hsheilbronn.mi.utils.crypto.CertificateAuthority;
-import de.hsheilbronn.mi.utils.crypto.CertificateAuthority.CertificateAuthorityBuilder;
-import de.hsheilbronn.mi.utils.crypto.CertificateHelper;
-import de.hsheilbronn.mi.utils.crypto.CertificationRequestBuilder;
-import de.hsheilbronn.mi.utils.crypto.io.CertificateWriter;
-import de.hsheilbronn.mi.utils.crypto.io.CsrIo;
-import de.hsheilbronn.mi.utils.crypto.io.PemIo;
+import de.rwh.utils.crypto.CertificateAuthority;
+import de.rwh.utils.crypto.CertificateHelper;
+import de.rwh.utils.crypto.CertificationRequestBuilder;
+import de.rwh.utils.crypto.io.CertificateWriter;
+import de.rwh.utils.crypto.io.CsrIo;
+import de.rwh.utils.crypto.io.PemIo;
 
 public class CertificateGenerator
 {
@@ -138,15 +137,15 @@ public class CertificateGenerator
 			X509Certificate caCertificate = readCertificate(caCertFile);
 			PrivateKey caPrivateKey = readPrivatekey(caPrivateKeyFile);
 
-			return CertificateAuthorityBuilder.create(caCertificate, caPrivateKey).initialize();
+			return CertificateAuthority.CertificateAuthorityBuilder.create(caCertificate, caPrivateKey).initialize();
 		}
 		else
 		{
 			logger.info("Initializing CA with new cert file: {}, private key {}", caCertFile.toString(),
 					caPrivateKeyFile.toString());
 
-			CertificateAuthority ca = CertificateAuthorityBuilder.create("DE", null, null, null, null, "Test")
-					.initialize();
+			CertificateAuthority ca = CertificateAuthority.CertificateAuthorityBuilder
+					.create("DE", null, null, null, null, "Test").initialize();
 
 			writeCertificate(caCertFile, ca.getCertificate());
 			writePrivateKeyEncrypted(caPrivateKeyFile, ca.getCaKeyPair().getPrivate());
