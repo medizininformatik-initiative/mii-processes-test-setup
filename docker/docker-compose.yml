@@ -199,7 +199,8 @@ services:
         medizininformatik-initiativede_coordinateDataSharing|1.0,
         medizininformatik-initiativede_mergeDataSharing|1.0,
         medizininformatik-initiativede_dataReceive|1.0,
-        medizininformatik-initiativede_reportReceive|1.0
+        medizininformatik-initiativede_reportReceive|1.0,
+        medizininformatik-initiativede_reportReceive|1.1
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
       # DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_HRP_IDENTIFIER: 'Test_HRP'
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
@@ -364,7 +365,8 @@ services:
         medizininformatik-initiativede_coordinateDataSharing|1.0,
         medizininformatik-initiativede_mergeDataSharing|1.0,
         medizininformatik-initiativede_dataReceive|1.0,
-        medizininformatik-initiativede_reportReceive|1.0
+        medizininformatik-initiativede_reportReceive|1.0,
+        medizininformatik-initiativede_reportReceive|1.1
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_DATALOGGINGENABLED: 'true'
@@ -693,7 +695,9 @@ services:
         medizininformatik-initiativede_executeDataSharing|1.0,
         medizininformatik-initiativede_mergeDataSharing|1.0,
         medizininformatik-initiativede_reportAutostart|1.0,
-        medizininformatik-initiativede_reportSend|1.0
+        medizininformatik-initiativede_reportAutostart|1.1,
+        medizininformatik-initiativede_reportSend|1.0,
+        medizininformatik-initiativede_reportSend|1.1
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
     networks:
       hrp-bpe-frontend:
