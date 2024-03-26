@@ -329,6 +329,12 @@
 						<code value="HRP"/>
 					</coding>
 				</code>
+				<code>
+					<coding>
+						<system value="http://dsf.dev/fhir/CodeSystem/organization-role"/>
+						<code value="COS"/>
+					</coding>
+				</code>
 				<endpoint>
 					<reference value="urn:uuid:b879e904-d666-45de-a995-accdd4429bgd"/>
 					<type value="Endpoint"/>

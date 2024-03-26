@@ -36,6 +36,7 @@ docker/**/fhir/log/*.log.gz
 
 docker/secrets/*.pem
 docker/.env
+docker/docker-compose.override.yml
 
 ###
 # data ignores
