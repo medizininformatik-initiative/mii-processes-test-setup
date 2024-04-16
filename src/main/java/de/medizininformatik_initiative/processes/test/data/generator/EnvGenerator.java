@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -17,10 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.medizininformatik_initiative.processes.test.data.generator.CertificateGenerator.CertificateFiles;
-
-import static java.nio.file.attribute.PosixFilePermission.OTHERS_EXECUTE;
-import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
-import static java.nio.file.attribute.PosixFilePermission.OTHERS_WRITE;
 
 public class EnvGenerator
 {
@@ -128,7 +125,7 @@ public class EnvGenerator
 		{
 			logger.info("Writing .env file to {}", target.toString());
 			Files.writeString(target, builder.toString());
-			Files.setPosixFilePermissions(target, Set.of(OTHERS_READ, OTHERS_WRITE, OTHERS_EXECUTE));
+			Files.setPosixFilePermissions(target, Set.of(PosixFilePermission.values()));
 		}
 		catch (IOException e)
 		{

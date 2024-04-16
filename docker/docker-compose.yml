@@ -1,6 +1,7 @@
 version: '3.8'
 services:
 
+  # ---- Build maven project for certificate creation and environment variable initialization
   init:
     image: maven:3.9
     command: mvn -f /project clean package
@@ -11,11 +12,29 @@ services:
     profiles:
       - init
 
+
+  # ---- Static cURL binary for health check in HAPI and Blaze container
+  curl-download:
+    image: alpine:3.18
+    command: >
+      sh -c "wget https://github.com/moparisthebest/static-curl/releases/download/v8.5.0/curl-${CPU_ARCHITECTURE:-amd64} -O /opt/bin/curl &&
+             chmod +x /opt/bin/curl"
+    volumes:
+    - type: volume
+      source: curl-binary
+      target: /opt/bin
+
+  # ---- Proxy
   proxy:
-    image: nginx:1.21
+    image: nginx:1.25.4
     restart: "no"
     ports:
       - ${DEV_DSF_PROXY_LISTEN_ADDRESS:-127.0.0.1:443}:443
+    healthcheck:
+      test: [ "CMD-SHELL", "curl", "--head", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     secrets:
       - proxy_certificate_and_int_cas.pem
       - proxy_certificate_private_key.pem
@@ -47,6 +66,7 @@ services:
     environment:
       TZ: Europe/Berlin
 
+  # ---- Database used for all dsf and fhir store services
   db:
     image: postgres:15
     restart: "no"
@@ -80,11 +100,12 @@ services:
         target: /docker-entrypoint-initdb.d/init-db.sh
         read_only: true
 
+  # ---- DIC 1
   dic1-fhir:
     image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -145,14 +166,16 @@ services:
       dic1-fhir-backend:
       common-net:
     depends_on:
-      - db
-      - proxy
+      db:
+        condition: service_healthy
+      proxy:
+        condition: service_healthy
 
   dic1-bpe:
     image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -210,15 +233,31 @@ services:
       dic1-bpe-backend:
       common-net:
     depends_on:
-      - db
-      - dic1-fhir
-    # - dic1-fhir-store-hapi not defining a dependency here, dic1-fhir-store-hapi needs to be started manually
-    # - dic1-fhir-store-blaze not defining a dependency here, dic1-fhir-store-blaze needs to be started manually
+      db:
+        condition: service_healthy
+      dic1-fhir:
+        condition: service_healthy
+      dic1-fhir-store-wait:
+        condition: service_completed_successfully
+
+  dic1-fhir-store-wait:
+    image: chainguard/wait-for-it
+    command: -h dic1-fhir-store -p 8080 -t 60
+    networks:
+      - dic1-bpe-backend
+    depends_on:
+      - dic1-fhir-store-${DEV_DSF_FHIR_STORE_TYPE_DIC_1:-blaze}
+
   dic1-fhir-store-hapi:
     image: hapiproject/hapi:v6.6.0
     restart: "no"
     ports:
       - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_1:-127.0.0.1:8080}:8080
+    healthcheck:
+      test: [ "CMD", "/opt/bin/curl", "http://localhost:8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
@@ -226,23 +265,40 @@ services:
       dic1-bpe-backend:
         aliases:
           - dic1-fhir-store
+    volumes_from:
+      - curl-download:ro
+    depends_on:
+      curl-download:
+        condition: service_completed_successfully
+
   dic1-fhir-store-blaze:
-    image: samply/blaze:0.22.1
+    image: samply/blaze:0.25
     restart: "no"
     ports:
       - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_1:-127.0.0.1:8080}:8080
+    healthcheck:
+      test: [ "CMD", "/opt/bin/curl", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     environment:
       TZ: Europe/Berlin
     networks:
       dic1-bpe-backend:
         aliases:
           - dic1-fhir-store
+    volumes_from:
+      - curl-download:ro
+    depends_on:
+      curl-download:
+        condition: service_completed_successfully
 
+  # ---- DIC 2
   dic2-fhir:
     image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -303,14 +359,16 @@ services:
       dic2-fhir-backend:
       common-net:
     depends_on:
-      - db
-      - proxy
+      db:
+        condition: service_healthy
+      proxy:
+        condition: service_healthy
 
   dic2-bpe:
     image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -367,15 +425,31 @@ services:
       dic2-bpe-backend:
       common-net:
     depends_on:
-      - db
-      - dic2-fhir
-    # - dic2-fhir-store-hapi not defining a dependency here, dic2-fhir-store-hapi needs to be started manually
-    # - dic2-fhir-store-blaze not defining a dependency here, dic2-fhir-store-blaze needs to be started manually
+      db:
+        condition: service_healthy
+      dic2-fhir:
+        condition: service_healthy
+      dic2-fhir-store-wait:
+        condition: service_completed_successfully
+
+  dic2-fhir-store-wait:
+    image: chainguard/wait-for-it
+    command: -h dic2-fhir-store -p 8080 -t 60
+    networks:
+      - dic2-bpe-backend
+    depends_on:
+      - dic2-fhir-store-${DEV_DSF_FHIR_STORE_TYPE_DIC_2:-blaze}
+
   dic2-fhir-store-hapi:
     image: hapiproject/hapi:v6.1.0
     restart: "no"
     ports:
       - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_2:-127.0.0.1:8081}:8080
+    healthcheck:
+      test: [ "CMD", "/opt/bin/curl", "http://localhost:8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
@@ -383,23 +457,40 @@ services:
       dic2-bpe-backend:
         aliases:
           - dic2-fhir-store
+    volumes_from:
+      - curl-download:ro
+    depends_on:
+      curl-download:
+        condition: service_completed_successfully
+
   dic2-fhir-store-blaze:
-    image: samply/blaze:0.22.1
+    image: samply/blaze:0.25
     restart: "no"
     ports:
       - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DIC_2:-127.0.0.1:8081}:8080
+    healthcheck:
+      test: [ "CMD", "/opt/bin/curl", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     environment:
       TZ: Europe/Berlin
     networks:
       dic2-bpe-backend:
         aliases:
           - dic2-fhir-store
+    volumes_from:
+      - curl-download:ro
+    depends_on:
+      curl-download:
+        condition: service_completed_successfully
 
+  # DMS
   dms-fhir:
     image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -460,14 +551,16 @@ services:
       dms-fhir-backend:
       common-net:
     depends_on:
-      - db
-      - proxy
+      db:
+        condition: service_healthy
+      proxy:
+        condition: service_healthy
 
   dms-bpe:
     image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -525,15 +618,31 @@ services:
       dms-bpe-backend:
       common-net:
     depends_on:
-      - db
-      - dms-fhir
-      # - dms-fhir-store-hapi not defining a dependency here, dms-fhir-store-hapi needs to be started manually
-      # - dms-fhir-store-blaze not defining a dependency here, dms-fhir-store-blaze needs to be started manually
+      db:
+        condition: service_healthy
+      dms-fhir:
+        condition: service_healthy
+      dms-fhir-store-wait:
+        condition: service_completed_successfully
+
+  dms-fhir-store-wait:
+    image: chainguard/wait-for-it
+    command: -h dms-fhir-store -p 8080 -t 60
+    networks:
+      - dms-bpe-backend
+    depends_on:
+      - dms-fhir-store-${DEV_DSF_FHIR_STORE_TYPE_DMS:-blaze}
+
   dms-fhir-store-hapi:
     image: hapiproject/hapi:v6.6.0
     restart: "no"
     ports:
       - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DMS:-127.0.0.1:8082}:8080
+    healthcheck:
+      test: [ "CMD", "/opt/bin/curl", "http://localhost:8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
@@ -541,23 +650,40 @@ services:
       dms-bpe-backend:
         aliases:
           - dms-fhir-store
+    volumes_from:
+      - curl-download:ro
+    depends_on:
+      curl-download:
+        condition: service_completed_successfully
+
   dms-fhir-store-blaze:
-    image: samply/blaze:0.22.1
+    image: samply/blaze:0.25
     restart: "no"
     ports:
       - ${DEV_DSF_FHIR_STORE_LISTEN_ADDRESS_DMS:-127.0.0.1:8082}:8080
+    healthcheck:
+      test: [ "CMD", "/opt/bin/curl", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     environment:
       TZ: Europe/Berlin
     networks:
       dms-bpe-backend:
         aliases:
           - dms-fhir-store
+    volumes_from:
+      - curl-download:ro
+    depends_on:
+      curl-download:
+        condition: service_completed_successfully
 
+  # ---- HRP
   hrp-fhir:
     image: ${DEV_DSF_FHIR_IMAGE:-datasharingframework/fhir}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -618,14 +744,16 @@ services:
       hrp-fhir-backend:
       common-net:
     depends_on:
-      - db
-      - proxy
+      db:
+        condition: service_healthy
+      proxy:
+        condition: service_healthy
 
   hrp-bpe:
     image: ${DEV_DSF_BPE_IMAGE:-datasharingframework/bpe}
     restart: "no"
     healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
+      test: [ "CMD-SHELL", "./healthcheck.sh" ]
       interval: 10s
       timeout: 15s
       retries: 5
@@ -676,8 +804,10 @@ services:
       hrp-bpe-backend:
       common-net:
     depends_on:
-      - db
-      - hrp-fhir
+      db:
+        condition: service_healthy
+      hrp-fhir:
+        condition: service_healthy
 
 
 secrets:
@@ -803,3 +933,6 @@ networks:
 volumes:
   db-data:
     name: db-data-mii-processes
+
+  curl-binary:
+    name: "curl-binary"

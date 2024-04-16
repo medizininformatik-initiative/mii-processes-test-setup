@@ -1,9 +1,11 @@
 # Process Data-Sharing
 
+Follow the instructions in the **General Setup** section in [README.md](./README.md) before continuing.
+
 Build the project from the root directory of this repository by executing the following command.
 
 ```sh
-mvn clean package
+docker compose -f docker/docker-compose.yml up -d init
 ```
 
 Add entries to your hosts file
@@ -77,7 +79,7 @@ Console 6: Start DMS DSF FHIR server and wait till started
 docker-compose up -d dms-fhir && docker-compose logs -f dms-fhir
 ```
 
-Console 6: Disconnect from log output (Ctrl-C) if server started 
+Console 6: Disconnect from log output (Ctrl-C) if server started
 Console 6: Start DMS DSF BPE server
 
 ```sh
@@ -99,8 +101,8 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 
 <!-- EXECUTE PROCESS -->
 
-*Start curl commands in console 8 from root-folder:* `mii-processes-test-setup`. In order for the commands 
-to be executed, the process plugin folder `mii-process-data-sharing` must be located next to the test setup folder 
+*Start curl commands in console 8 from root-folder:* `mii-processes-test-setup`. In order for the commands
+to be executed, the process plugin folder `mii-process-data-sharing` must be located next to the test setup folder
 `mii-processes-test-setup`.
 
 Console 8: Execute Demo Transaction-Bundle for DIC1 HAPI FHIR server
@@ -145,8 +147,8 @@ curl http://localhost:8082/fhir/DocumentReference
 
 Console 6: Execute DMS user-task to release merged data-set for HRP based on the URL in the log output from console 6
 
-console 8 : Check if the Task starting the coordination process at the HRP contains a Task.output with 
-            code `data-set-location` containing the URL inserted as part of the user-task at the DMS 
+console 8 : Check if the Task starting the coordination process at the HRP contains a Task.output with
+            code `data-set-location` containing the URL inserted as part of the user-task at the DMS
 ```sh
 curl -H "Accept: application/xml+fhir" \
 --ssl-no-revoke --cacert cert/ca/testca_certificate.pem \

@@ -1,3 +1,7 @@
+# General Configuration
+
+- Build
+
 # Testing using Docker Setup
 
 - To test the `Process Report`, follow the instructions in [README-Process-Report.md](./README-Process-Report.md)
