@@ -64,8 +64,8 @@ public class EnvGenerator
 			String... commonNames)
 	{
 		return clientCertificateFilesByCommonName.entrySet().stream()
-				.filter(entry -> Arrays.asList(commonNames).contains(entry.getKey()))
-				.sorted(Comparator.comparing(e -> Arrays.asList(commonNames).indexOf(e.getKey()))).map(Entry::getValue)
+				.filter(entry -> List.of(commonNames).contains(entry.getKey()))
+				.sorted(Comparator.comparing(e -> List.of(commonNames).indexOf(e.getKey()))).map(Entry::getValue)
 				.map(CertificateFiles::getCertificateSha512ThumbprintHex);
 	}
 

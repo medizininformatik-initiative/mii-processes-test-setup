@@ -58,8 +58,8 @@ public class CertificateGenerator
 	private static final String[] CLIENT_COMMON_NAMES = { "hrp-client", "dms-client", "dic1-client", "dic2-client",
 			"Webbrowser Test User" };
 
-	private static final List<String> DNS_NAMES = Arrays.asList("localhost", "host.docker.internal", "fhir", "bpe",
-			"dic1", "dic2", "dms", "hrp");
+	private static final List<String> DNS_NAMES = List.of("localhost", "host.docker.internal", "fhir", "bpe", "dic1",
+			"dic2", "dms", "hrp");
 
 	private static final BouncyCastleProvider PROVIDER = new BouncyCastleProvider();
 
