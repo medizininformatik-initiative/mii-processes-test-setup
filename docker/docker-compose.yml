@@ -77,6 +77,25 @@ services:
         target: /docker-entrypoint-initdb.d/init-db.sh
         read_only: true
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    ports:
+      - 127.0.0.1:9000:8080
+    command:  >-
+      start-dev
+      --hostname keycloak
+      --import-realm
+    volumes:
+      - type: bind
+        source: ./keycloak/realms
+        target: /opt/keycloak/data/import
+    environment:
+      TZ: Europe/Berlin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      dic2-bpe-backend:
+
   dic1-fhir:
     image: datasharingframework/fhir
     restart: "no"
@@ -219,7 +238,7 @@ services:
         aliases:
           - dic1-fhir-store
   dic1-fhir-store-blaze:
-    image: samply/blaze:0.22.1
+    image: samply/blaze:0.28.0
     restart: "no"
     ports:
       - 127.0.0.1:8080:8080
@@ -372,16 +391,19 @@ services:
         aliases:
           - dic2-fhir-store
   dic2-fhir-store-blaze:
-    image: samply/blaze:0.22.1
+    image: samply/blaze:0.28.0
     restart: "no"
     ports:
       - 127.0.0.1:8081:8080
     environment:
       TZ: Europe/Berlin
+      OPENID_PROVIDER_URL: http://keycloak:8080/realms/blaze
     networks:
       dic2-bpe-backend:
         aliases:
           - dic2-fhir-store
+    depends_on:
+      - keycloak
 
   dms-fhir:
     image: datasharingframework/fhir
