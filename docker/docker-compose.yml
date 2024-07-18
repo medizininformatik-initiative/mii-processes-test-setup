@@ -80,11 +80,16 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     ports:
-      - 127.0.0.1:9000:8080
+      - 127.0.0.1:8443:8443
     command:  >-
-      start-dev
-      --hostname keycloak
+      start
       --import-realm
+      --hostname-strict=false
+      --https-certificate-file=/run/secrets/keycloak_certificate_and_int_cas.pem
+      --https-certificate-key-file=/run/secrets/keycloak_certificate_private_key.pem
+    secrets:
+      - keycloak_certificate_and_int_cas.pem
+      - keycloak_certificate_private_key.pem
     volumes:
       - type: bind
         source: ./keycloak/realms
@@ -110,7 +115,6 @@ services:
       - db_liquibase.password
       - db_dic1_fhir_user.password
       - db_dic1_fhir_user_permanent_delete.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_dic1_client_certificate.pem
       - app_dic1_client_certificate_private_key.pem
@@ -178,7 +182,6 @@ services:
       - db_liquibase.password
       - db_dic1_bpe_user.password
       - db_dic1_bpe_user_camunda.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_dic1_client_certificate.pem
       - app_dic1_client_certificate_private_key.pem
@@ -263,7 +266,6 @@ services:
       - db_liquibase.password
       - db_dic2_fhir_user.password
       - db_dic2_fhir_user_permanent_delete.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_dic2_client_certificate.pem
       - app_dic2_client_certificate_private_key.pem
@@ -331,7 +333,6 @@ services:
       - db_liquibase.password
       - db_dic2_bpe_user.password
       - db_dic2_bpe_user_camunda.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_dic2_client_certificate.pem
       - app_dic2_client_certificate_private_key.pem
@@ -395,9 +396,13 @@ services:
     restart: "no"
     ports:
       - 127.0.0.1:8081:8080
+    secrets:
+      - keycloak_trust_certificates.p12
     environment:
       TZ: Europe/Berlin
-      OPENID_PROVIDER_URL: http://keycloak:8080/realms/blaze
+      OPENID_PROVIDER_URL: https://keycloak:8443/realms/blaze
+      OPENID_CLIENT_TRUST_STORE: /run/secrets/keycloak_trust_certificates.p12
+      OPENID_CLIENT_TRUST_STORE_PASS: password
     networks:
       dic2-bpe-backend:
         aliases:
@@ -419,7 +424,6 @@ services:
       - db_liquibase.password
       - db_dms_fhir_user.password
       - db_dms_fhir_user_permanent_delete.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_dms_client_certificate.pem
       - app_dms_client_certificate_private_key.pem
@@ -487,7 +491,6 @@ services:
       - db_liquibase.password
       - db_dms_bpe_user.password
       - db_dms_bpe_user_camunda.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_dms_client_certificate.pem
       - app_dms_client_certificate_private_key.pem
@@ -574,7 +577,6 @@ services:
       - db_liquibase.password
       - db_hrp_fhir_user.password
       - db_hrp_fhir_user_permanent_delete.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_hrp_client_certificate.pem
       - app_hrp_client_certificate_private_key.pem
@@ -642,7 +644,6 @@ services:
       - db_liquibase.password
       - db_hrp_bpe_user.password
       - db_hrp_bpe_user_camunda.password
-      - app_server_trust_certificates.pem
       - app_client_trust_certificates.pem
       - app_hrp_client_certificate.pem
       - app_hrp_client_certificate_private_key.pem
@@ -700,6 +701,15 @@ secrets:
   db_liquibase.password:
     file: ./secrets/db_liquibase.password
 
+  keycloak_certificate_and_int_cas.pem:
+    file: ./secrets/keycloak_certificate_and_int_cas.pem
+  keycloak_certificate_private_key.pem:
+    file: ./secrets/keycloak_certificate_private_key.pem
+  keycloak_trust_certificates.pem:
+    file: ./secrets/app_ca_certificates.pem
+  keycloak_trust_certificates.p12:
+    file: ./secrets/app_ca_certificates.p12
+
   db_dic1_fhir_user.password:
     file: ./secrets/db_dic1_fhir_user.password
   db_dic1_fhir_user_permanent_delete.password:
@@ -736,8 +746,6 @@ secrets:
   db_hrp_bpe_user_camunda.password:
     file: ./secrets/db_hrp_bpe_user_camunda.password
 
-  app_server_trust_certificates.pem:
-    file: ./secrets/app_ca_certificates.pem
   app_client_trust_certificates.pem:
     file: ./secrets/app_ca_certificates.pem
   app_client_certificate_private_key.pem.password:

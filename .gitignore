@@ -35,6 +35,7 @@ docker/**/fhir/log/*.log
 docker/**/fhir/log/*.log.gz
 
 docker/secrets/*.pem
+docker/secrets/*.p12
 docker/.env
 docker/docker-compose.override.yml
 
