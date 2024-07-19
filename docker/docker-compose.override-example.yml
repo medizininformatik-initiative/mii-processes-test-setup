@@ -21,6 +21,7 @@ services:
   dic2-bpe:
     secrets:
       - keycloak_trust_certificates.pem
+      - keycloak_client_secret.password
     environment:
       DEV_DSF_BPE_PROCESS_EXCLUDED: >-
         medizininformatik-initiativede_coordinateDataSharing|1.0,
@@ -33,7 +34,7 @@ services:
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_OAUTH2_ISSUER_URL: https://keycloak:8443/realms/blaze/protocol/openid-connect/token
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_OAUTH2_TRUST_CERTIFICATES: /run/secrets/keycloak_trust_certificates.pem
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_OAUTH2_CLIENT_ID: account
-      DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_OAUTH2_CLIENT_PASSWORD: e11a3a8e-6e24-4f9d-b914-da7619e8b31f
+      DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_OAUTH2_CLIENT_PASSWORD_FILE: /run/secrets/keycloak_client_secret.password
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_DATALOGGINGENABLED: 'true'
       DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DIC_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DIC_FHIR_DATALOGGINGENABLED: 'true'
@@ -64,3 +65,7 @@ services:
         medizininformatik-initiativede_reportSend|1.1,
         medizininformatik-initiativede_extractData|1.0,
         medizininformatik-initiativede_insertForm|1.0
+
+secrets:
+  keycloak_client_secret.password:
+    file: ./secrets/keycloak_client_secret.password
