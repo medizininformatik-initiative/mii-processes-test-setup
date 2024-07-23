@@ -104,7 +104,7 @@ services:
       timeout: 15s
       retries: 5
     networks:
-      dic2-bpe-backend:
+      internal-fhir-store:
 
   basic-auth-forward-proxy:
     image: pierredavidbelanger/basic-auth-forward-proxy:latest
@@ -117,6 +117,7 @@ services:
       BASIC_AUTH_PASS: password
     networks:
       - dic2-bpe-backend
+      - internal-fhir-store
 
   dic1-fhir:
     image: datasharingframework/fhir
@@ -394,6 +395,8 @@ services:
     depends_on:
       - db
       - dic2-fhir
+      - basic-auth-forward-proxy
+      - keycloak
       # - dic2-fhir-store-hapi not defining a dependency here, dic2-fhir-store-hapi needs to be started manually
       # - dic2-fhir-store-blaze not defining a dependency here, dic2-fhir-store-blaze needs to be started manually
   dic2-fhir-store-hapi:
@@ -421,12 +424,14 @@ services:
       OPENID_CLIENT_TRUST_STORE: /run/secrets/keycloak_trust_certificates.p12
       OPENID_CLIENT_TRUST_STORE_PASS: password
     networks:
-      dic2-bpe-backend:
+      internal-fhir-store:
         aliases:
           - dic2-fhir-store
     depends_on:
       keycloak:
         condition: service_healthy
+      basic-auth-forward-proxy:
+        condition: service_started
 
   dms-fhir:
     image: datasharingframework/fhir
@@ -853,6 +858,7 @@ networks:
       config:
         - subnet: 172.20.0.120/29
   hrp-bpe-backend:
+  internal-fhir-store:
 
 
 volumes:
