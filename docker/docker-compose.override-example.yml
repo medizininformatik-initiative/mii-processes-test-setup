@@ -23,10 +23,6 @@ services:
       - keycloak_trust_certificates.pem
       - keycloak_client_secret.password
     environment:
-      DEV_DSF_PROXY_URL: http://basic-auth-forward-proxy:8888
-      DEV_DSF_PROXY_USERNAME: proxy
-      DEV_DSF_PROXY_PASSWORD: password
-      DEV_DSF_PROXY_NOPROXY: dic1, dic2, dms, hrp
       DEV_DSF_BPE_PROCESS_EXCLUDED: >-
         medizininformatik-initiativede_coordinateDataSharing|1.0,
         medizininformatik-initiativede_mergeDataSharing|1.0,

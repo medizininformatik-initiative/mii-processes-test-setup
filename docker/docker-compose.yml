@@ -104,7 +104,7 @@ services:
       timeout: 15s
       retries: 5
     networks:
-      internal-fhir-store:
+      dic2-proxy:
 
   basic-auth-forward-proxy:
     image: pierredavidbelanger/basic-auth-forward-proxy:latest
@@ -116,8 +116,8 @@ services:
       BASIC_AUTH_USER: proxy
       BASIC_AUTH_PASS: password
     networks:
-      - dic2-bpe-backend
-      - internal-fhir-store
+      - internet
+      - dic2-proxy
 
   dic1-fhir:
     image: datasharingframework/fhir
@@ -328,14 +328,18 @@ services:
             practitioner-role:
               - http://dsf.dev/fhir/CodeSystem/practitioner-role|DSF_ADMIN
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
+      DEV_DSF_PROXY_URL: http://basic-auth-forward-proxy:8888
+      DEV_DSF_PROXY_USERNAME: proxy
+      DEV_DSF_PROXY_PASSWORD: password
     networks:
       dic2-fhir-frontend:
         ipv4_address: 172.20.0.83
       dic2-fhir-backend:
-      internet:
+      dic2-proxy:
     depends_on:
       - db
       - proxy
+      - basic-auth-forward-proxy
 
   dic2-bpe:
     image: datasharingframework/bpe
@@ -387,11 +391,14 @@ services:
       DEV_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC2
       DEV_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic2/fhir
       DEV_DSF_SERVER_AUTH_TRUST_CLIENT_CERTIFICATE_CAS: /run/secrets/app_client_trust_certificates.pem
+      DEV_DSF_PROXY_URL: http://basic-auth-forward-proxy:8888
+      DEV_DSF_PROXY_USERNAME: proxy
+      DEV_DSF_PROXY_PASSWORD: password
     networks:
       dic2-bpe-frontend:
         ipv4_address: 172.20.0.91
       dic2-bpe-backend:
-      internet:
+      dic2-proxy:
     depends_on:
       - db
       - dic2-fhir
@@ -408,7 +415,7 @@ services:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
     networks:
-      dic2-bpe-backend:
+      dic2-proxy:
         aliases:
           - dic2-fhir-store
   dic2-fhir-store-blaze:
@@ -424,7 +431,7 @@ services:
       OPENID_CLIENT_TRUST_STORE: /run/secrets/keycloak_trust_certificates.p12
       OPENID_CLIENT_TRUST_STORE_PASS: password
     networks:
-      internal-fhir-store:
+      dic2-proxy:
         aliases:
           - dic2-fhir-store
     depends_on:
@@ -858,7 +865,7 @@ networks:
       config:
         - subnet: 172.20.0.120/29
   hrp-bpe-backend:
-  internal-fhir-store:
+  dic2-proxy:
 
 
 volumes:
