@@ -105,6 +105,7 @@ services:
       retries: 5
     networks:
       dic2-proxy:
+      internet:
 
   basic-auth-forward-proxy:
     image: pierredavidbelanger/basic-auth-forward-proxy:latest
@@ -116,8 +117,8 @@ services:
       BASIC_AUTH_USER: proxy
       BASIC_AUTH_PASS: password
     networks:
-      - internet
-      - dic2-proxy
+      dic2-proxy:
+      internet:
 
   dic1-fhir:
     image: datasharingframework/fhir
@@ -259,7 +260,7 @@ services:
         aliases:
           - dic1-fhir-store
   dic1-fhir-store-blaze:
-    image: samply/blaze:0.28.0
+    image: samply/blaze:0.29.2
     restart: "no"
     ports:
       - 127.0.0.1:8080:8080
@@ -419,7 +420,7 @@ services:
         aliases:
           - dic2-fhir-store
   dic2-fhir-store-blaze:
-    image: samply/blaze:0.28.0
+    image: samply/blaze:0.29.2
     restart: "no"
     ports:
       - 127.0.0.1:8081:8080
@@ -582,7 +583,7 @@ services:
         aliases:
           - dms-fhir-store
   dms-fhir-store-blaze:
-    image: samply/blaze:0.22.1
+    image: samply/blaze:0.29.2
     restart: "no"
     ports:
       - 127.0.0.1:8082:8080
