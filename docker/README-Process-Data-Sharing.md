@@ -114,7 +114,10 @@ http://localhost:8080/fhir
 Console 8: Execute Demo Transaction-Bundle for DIC2 HAPI FHIR server
 
 ```sh
-curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
+ACCESS_TOKEN=$(curl -k -s -d 'grant_type=client_credentials' -u 'account:e11a3a8e-6e24-4f9d-b914-da7619e8b31f' \
+https://localhost:8443/realms/blaze/protocol/openid-connect/token | jq -r .access_token)
+
+curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" --oauth2-bearer "${ACCESS_TOKEN}" \
 -d @../mii-process-data-sharing/src/test/resources/fhir/Bundle/Dic2FhirStore_Demo_Bundle.xml \
 http://localhost:8081/fhir
 ```
