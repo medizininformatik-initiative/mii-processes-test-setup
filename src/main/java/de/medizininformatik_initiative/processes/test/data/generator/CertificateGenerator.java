@@ -54,12 +54,12 @@ public class CertificateGenerator
 
 	private static final char[] CERT_PASSWORD = "password".toCharArray();
 
-	private static final String SERVER_COMMON_NAME = "localhost";
+	private static final String[] SERVER_COMMON_NAMES = { "localhost", "keycloak" };
 	private static final String[] CLIENT_COMMON_NAMES = { "hrp-client", "dms-client", "dic1-client", "dic2-client",
 			"Webbrowser Test User" };
 
-	private static final List<String> DNS_NAMES = List.of("localhost", "host.docker.internal", "fhir", "bpe", "dic1",
-			"dic2", "dms", "hrp");
+	private static final Map<String, List<String>> DNS_NAMES = Map.of("localhost",
+			List.of("localhost", "host.docker.internal", "fhir", "bpe", "dic1", "dic2", "dms", "hrp"));
 
 	private static final BouncyCastleProvider PROVIDER = new BouncyCastleProvider();
 
@@ -103,13 +103,18 @@ public class CertificateGenerator
 	}
 
 	private CertificateAuthority ca;
-	private CertificateFiles serverCertificateFiles;
+
+	private Map<String, CertificateFiles> serverCertificateFilesByCommonName;
 	private Map<String, CertificateFiles> clientCertificateFilesByCommonName;
 
 	public void generateCertificates()
 	{
 		ca = initCA();
-		serverCertificateFiles = createCert(CertificateType.SERVER, SERVER_COMMON_NAME, DNS_NAMES);
+		serverCertificateFilesByCommonName = Arrays.stream(SERVER_COMMON_NAMES)
+				.map(commonName -> createCert(CertificateType.SERVER, commonName,
+						DNS_NAMES.getOrDefault(commonName, Collections.singletonList(commonName))))
+				.collect(Collectors.toMap(CertificateFiles::getCommonName, Function.identity()));
+
 		clientCertificateFilesByCommonName = Arrays.stream(CLIENT_COMMON_NAMES)
 				.map(commonName -> createCert(CertificateType.CLIENT, commonName, Collections.emptyList()))
 				.collect(Collectors.toMap(CertificateFiles::getCommonName, Function.identity()));
@@ -224,7 +229,8 @@ public class CertificateGenerator
 		Path thumbprintsFile = Paths.get("cert", "thumbprints.txt");
 
 		Stream<String> certificates = Streams
-				.concat(Stream.of(serverCertificateFiles), clientCertificateFilesByCommonName.values().stream())
+				.concat(serverCertificateFilesByCommonName.values().stream(),
+						clientCertificateFilesByCommonName.values().stream())
 				.sorted(Comparator.comparing(CertificateFiles::getCommonName))
 				.map(c -> c.getCommonName() + "\n\t" + c.getCertificateSha512ThumbprintHex() + " (SHA-512)\n");
 
@@ -494,6 +500,10 @@ public class CertificateGenerator
 		Path fhirCacertFile = baseFolder.resolve("secrets/app_ca_certificates.pem");
 		logger.info("Copying Test CA certificate file to {}", fhirCacertFile.toString());
 		writeCertificate(fhirCacertFile, ca.getCertificate());
+
+		Path fhirCacertFileP12 = baseFolder.resolve("secrets/app_ca_certificates.p12");
+		KeyStore fhirCacertKeyStore = createP12CertificateStore("ca", ca.getCertificate());
+		writeP12File(fhirCacertFileP12, fhirCacertKeyStore);
 	}
 
 	private void copyDockerTestClientCertFiles(String folder, String commonName)
@@ -527,13 +537,25 @@ public class CertificateGenerator
 	{
 		X509Certificate testCaCertificate = ca.getCertificate();
 
+		CertificateFiles localhost = serverCertificateFilesByCommonName.get("localhost");
+
 		Path serverCertificateAndCa = Paths.get(folder, "proxy_certificate_and_int_cas.pem");
 		logger.info("Writing server certificate and CA certificate to {}", serverCertificateAndCa.toString());
-		writeCertificates(serverCertificateAndCa, serverCertificateFiles.getCertificate(), testCaCertificate);
+		writeCertificates(serverCertificateAndCa, localhost.getCertificate(), testCaCertificate);
 
 		Path serverCertificatePrivateKey = Paths.get(folder, "proxy_certificate_private_key.pem");
 		logger.info("Copying server private-key file to {}", serverCertificatePrivateKey.toString());
-		writePrivateKeyNotEncrypted(serverCertificatePrivateKey, serverCertificateFiles.keyPair.getPrivate());
+		writePrivateKeyNotEncrypted(serverCertificatePrivateKey, localhost.keyPair.getPrivate());
+
+		CertificateFiles keycloak = serverCertificateFilesByCommonName.get("keycloak");
+
+		Path keycloakCertificateAndCa = Paths.get(folder, "keycloak_certificate_and_int_cas.pem");
+		logger.info("Writing keycloak certificate and CA certificate to {}", keycloakCertificateAndCa.toString());
+		writeCertificates(keycloakCertificateAndCa, keycloak.getCertificate());
+
+		Path keycloakCertificatePrivateKey = Paths.get(folder, "keycloak_certificate_private_key.pem");
+		logger.info("Copying keycloak private-key file to {}", keycloakCertificatePrivateKey);
+		writePrivateKeyNotEncrypted(keycloakCertificatePrivateKey, keycloak.keyPair.getPrivate());
 	}
 
 	private void writeCertificates(Path certificateFile, X509Certificate... certificates)
@@ -563,12 +585,26 @@ public class CertificateGenerator
 	{
 		Path certP12Path = getCertP12Path(files.commonName);
 
-		logger.info("Saving certificate (p21) to {}, password '{}' [{}]", certP12Path.toString(),
+		logger.info("Saving certificate (p12) to {}, password '{}' [{}]", certP12Path.toString(),
 				String.valueOf(CERT_PASSWORD), files.commonName);
 		KeyStore p12KeyStore = createP12KeyStore(files.keyPair.getPrivate(), files.commonName, files.certificate);
 		writeP12File(certP12Path, p12KeyStore);
 
 		return certP12Path;
+	}
+
+	private KeyStore createP12CertificateStore(String alias, X509Certificate certificate)
+	{
+		try
+		{
+			return CertificateHelper.toCertificateStore(alias, certificate);
+		}
+		catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IllegalStateException
+				| IOException e)
+		{
+			logger.error("Error while creating P12 key-store", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	private KeyStore createP12KeyStore(PrivateKey privateKey, String commonName, X509Certificate certificate)

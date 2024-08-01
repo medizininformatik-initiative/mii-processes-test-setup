@@ -73,7 +73,7 @@ Console 5: Add the search Bundle to HRP DSF FHIR server
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @../mii-process-report/src/test/resources/fhir/Bundle/search-bundle.xml \
+-d @../mii-process-report/src/test/resources/fhir/Bundle/search-bundle-v1.1.xml \
 --ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
 --cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
