@@ -1,0 +1,142 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "NCT fTTP",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/"
+        }
+    ],
+    "paths": {
+        "/ths/rest/sessions": {
+            "post": {
+                "summary": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sessionId": {
+                                            "type": "string",
+                                            "example": "ffc70440-399f-41f2-90c0-de19d0542818"
+                                        },
+                                        "uri": {
+                                            "type": "string",
+                                            "example": "https://ths-client6-test.med.tu-dresden.de:443/ths/rest/sessions/ffc70440-399f-41f2-90c0-de19d0542818"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ths/rest/sessions/ffc70440-399f-41f2-90c0-de19d0542818/tokens": {
+            "post": {
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with patient form details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "call": {
+                                            "type": "object",
+                                            "properties": {
+                                                "form": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "method": {
+                                                            "type": "string",
+                                                            "example": "GET"
+                                                        },
+                                                        "url": {
+                                                            "type": "string",
+                                                            "example": "https://ths-client6-test.med.tu-dresden.de:443/ths-web/rest/html/public/patient/add?tokenId=5d345bab-8afc-4cc2-807e-6ec832a9354c"
+                                                        }
+                                                    }
+                                                },
+                                                "action": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "method": {
+                                                            "type": "string",
+                                                            "example": "POST"
+                                                        },
+                                                        "url": {
+                                                            "type": "string",
+                                                            "example": "https://ths-client6-test.med.tu-dresden.de:443/ths/rest/patient/add/5d345bab-8afc-4cc2-807e-6ec832a9354c"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "tokenId": {
+                                            "type": "string",
+                                            "example": "5d345bab-8afc-4cc2-807e-6ec832a9354c"
+                                        },
+                                        "uri": {
+                                            "type": "string",
+                                            "example": "https://ths-client6-test.med.tu-dresden.de:443/ths/rest/sessions/ffc70440-399f-41f2-90c0-de19d0542818/tokens/5d345bab-8afc-4cc2-807e-6ec832a9354c"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ths/rest/patient/add/5d345bab-8afc-4cc2-807e-6ec832a9354c": {
+            "post": {
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with patient status list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "psnList": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "targetId": {
+                                                        "type": "string",
+                                                        "example": "pseudonym"
+                                                    },
+                                                    "index": {
+                                                        "type": "string",
+                                                        "example": "1"
+                                                    },
+                                                    "tentative": {
+                                                        "type": "boolean",
+                                                        "example": false
+                                                    },
+                                                    "patientStatus": {
+                                                        "type": "string",
+                                                        "example": "created"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@
 
 	<groupId>de.medizininformatik-initiative</groupId>
 	<artifactId>mii-processes-test-setup</artifactId>
-	<version>1.0.2.0</version>
+	<version>1.0.3.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>dev.dsf</groupId>
 			<artifactId>dsf-fhir-rest-adapter</artifactId>
-			<version>1.5.2</version>
+			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
@@ -57,7 +57,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -87,7 +87,7 @@
 			<plugin>
 				<groupId>net.revelc.code</groupId>
 				<artifactId>impsort-maven-plugin</artifactId>
-				<version>1.11.0</version>
+				<version>1.12.0</version>
 				<configuration>
 					<compliance>17</compliance>
 					<groups>java.,javax.,org.,com.</groups>
