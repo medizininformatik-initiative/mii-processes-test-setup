@@ -9,6 +9,7 @@ fi
 
 for file in data/*.json
 do
+  echo ""
   echo "Sending FHIR bundle $file ..."
   curl -X POST -H "Content-Type: application/json" -d @"$file" "$1"
 done
