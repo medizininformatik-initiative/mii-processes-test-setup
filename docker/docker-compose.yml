@@ -81,7 +81,7 @@ services:
     image: quay.io/keycloak/keycloak:25.0.1
     ports:
       - 127.0.0.1:8443:8443
-    command:  >-
+    command: >-
       start
       --import-realm
       --hostname-strict=false
@@ -123,11 +123,6 @@ services:
   dic1-fhir:
     image: datasharingframework/fhir
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5000:5000
     secrets:
@@ -190,11 +185,6 @@ services:
   dic1-bpe:
     image: datasharingframework/bpe
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5010:5010
     secrets:
@@ -248,7 +238,7 @@ services:
       # - dic1-fhir-store-hapi not defining a dependency here, dic1-fhir-store-hapi needs to be started manually
       # - dic1-fhir-store-blaze not defining a dependency here, dic1-fhir-store-blaze needs to be started manually
   dic1-fhir-store-hapi:
-    image: hapiproject/hapi:v6.6.0
+    image: hapiproject/hapi:v7.6.0
     restart: "no"
     ports:
       - 127.0.0.1:8080:8080
@@ -274,11 +264,6 @@ services:
   dic2-fhir:
     image: datasharingframework/fhir
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5001:5001
     secrets:
@@ -345,11 +330,6 @@ services:
   dic2-bpe:
     image: datasharingframework/bpe
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5011:5011
     secrets:
@@ -408,7 +388,7 @@ services:
       # - dic2-fhir-store-hapi not defining a dependency here, dic2-fhir-store-hapi needs to be started manually
       # - dic2-fhir-store-blaze not defining a dependency here, dic2-fhir-store-blaze needs to be started manually
   dic2-fhir-store-hapi:
-    image: hapiproject/hapi:v6.1.0
+    image: hapiproject/hapi:v7.6.0
     restart: "no"
     ports:
       - 127.0.0.1:8081:8080
@@ -444,11 +424,6 @@ services:
   dms-fhir:
     image: datasharingframework/fhir
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5002:5002
     secrets:
@@ -511,11 +486,6 @@ services:
   dms-bpe:
     image: datasharingframework/bpe
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5012:5012
     secrets:
@@ -571,7 +541,7 @@ services:
       # - dms-fhir-store-hapi not defining a dependency here, dms-fhir-store-hapi needs to be started manually
       # - dms-fhir-store-blaze not defining a dependency here, dms-fhir-store-blaze needs to be started manually
   dms-fhir-store-hapi:
-    image: hapiproject/hapi:v6.6.0
+    image: hapiproject/hapi:v7.6.0
     restart: "no"
     ports:
       - 127.0.0.1:8082:8080
@@ -597,11 +567,6 @@ services:
   hrp-fhir:
     image: datasharingframework/fhir
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "dev.dsf.dsf.fhir.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5003:5003
     secrets:
@@ -664,11 +629,6 @@ services:
   hrp-bpe:
     image: datasharingframework/bpe
     restart: "no"
-    healthcheck:
-      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "dev.dsf.dsf.bpe.StatusClient" ]
-      interval: 10s
-      timeout: 15s
-      retries: 5
     ports:
       - 127.0.0.1:5013:5013
     secrets:
@@ -753,11 +713,11 @@ secrets:
   db_dic2_fhir_user.password:
     file: ./secrets/db_dic2_fhir_user.password
   db_dic2_fhir_user_permanent_delete.password:
-      file: ./secrets/db_dic2_fhir_user_permanent_delete.password
+    file: ./secrets/db_dic2_fhir_user_permanent_delete.password
   db_dic2_bpe_user.password:
-      file: ./secrets/db_dic2_bpe_user.password
+    file: ./secrets/db_dic2_bpe_user.password
   db_dic2_bpe_user_camunda.password:
-      file: secrets/db_dic1_bpe_user_camunda.password
+    file: secrets/db_dic1_bpe_user_camunda.password
 
   db_dms_fhir_user.password:
     file: ./secrets/db_dms_fhir_user.password
