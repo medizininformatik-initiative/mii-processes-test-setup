@@ -2,7 +2,7 @@ version: '3.8'
 services:
   proxy:
     image: nginx:1.25
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:443:443
     secrets:
@@ -46,7 +46,7 @@ services:
 
   db:
     image: postgres:15
-    restart: "no"
+    restart: 'no'
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U liquibase_user -d postgres" ]
       interval: 10s
@@ -109,7 +109,7 @@ services:
 
   basic-auth-forward-proxy:
     image: pierredavidbelanger/basic-auth-forward-proxy:latest
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:8888:8888
     environment:
@@ -122,7 +122,7 @@ services:
 
   dic1-fhir:
     image: datasharingframework/fhir
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5000:5000
     secrets:
@@ -184,7 +184,7 @@ services:
 
   dic1-bpe:
     image: datasharingframework/bpe
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5010:5010
     secrets:
@@ -238,24 +238,26 @@ services:
       # - dic1-fhir-store-hapi not defining a dependency here, dic1-fhir-store-hapi needs to be started manually
       # - dic1-fhir-store-blaze not defining a dependency here, dic1-fhir-store-blaze needs to be started manually
   dic1-fhir-store-hapi:
-    image: hapiproject/hapi:v7.6.0
-    restart: "no"
+    image: hapiproject/hapi:v8.0.0
+    restart: 'no'
     ports:
       - 127.0.0.1:8080:8080
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
+      HAPI_FHIR_BINARY_STORAGE_ENABLED: 'true'
     networks:
       dic1-bpe-backend:
         aliases:
           - dic1-fhir-store
   dic1-fhir-store-blaze:
-    image: samply/blaze:0.30.0
-    restart: "no"
+    image: samply/blaze:0.30.2
+    restart: 'no'
     ports:
       - 127.0.0.1:8080:8080
     environment:
       TZ: Europe/Berlin
+      BASE_URL: 'http://dic1-fhir-store:8080'
     networks:
       dic1-bpe-backend:
         aliases:
@@ -263,7 +265,7 @@ services:
 
   dic2-fhir:
     image: datasharingframework/fhir
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5001:5001
     secrets:
@@ -329,7 +331,7 @@ services:
 
   dic2-bpe:
     image: datasharingframework/bpe
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5011:5011
     secrets:
@@ -388,26 +390,28 @@ services:
       # - dic2-fhir-store-hapi not defining a dependency here, dic2-fhir-store-hapi needs to be started manually
       # - dic2-fhir-store-blaze not defining a dependency here, dic2-fhir-store-blaze needs to be started manually
   dic2-fhir-store-hapi:
-    image: hapiproject/hapi:v7.6.0
-    restart: "no"
+    image: hapiproject/hapi:v8.0.0
+    restart: 'no'
     ports:
       - 127.0.0.1:8081:8080
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
+      HAPI_FHIR_BINARY_STORAGE_ENABLED: 'true'
     networks:
       dic2-proxy:
         aliases:
           - dic2-fhir-store
   dic2-fhir-store-blaze:
     image: samply/blaze:0.29.2
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:8081:8080
     secrets:
       - keycloak_trust_certificates.p12
     environment:
       TZ: Europe/Berlin
+      BASE_URL: 'http://dic2-fhir-store:8080'
       OPENID_PROVIDER_URL: https://keycloak:8443/realms/blaze
       OPENID_CLIENT_TRUST_STORE: /run/secrets/keycloak_trust_certificates.p12
       OPENID_CLIENT_TRUST_STORE_PASS: password
@@ -423,7 +427,7 @@ services:
 
   dms-fhir:
     image: datasharingframework/fhir
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5002:5002
     secrets:
@@ -485,7 +489,7 @@ services:
 
   dms-bpe:
     image: datasharingframework/bpe
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5012:5012
     secrets:
@@ -541,24 +545,26 @@ services:
       # - dms-fhir-store-hapi not defining a dependency here, dms-fhir-store-hapi needs to be started manually
       # - dms-fhir-store-blaze not defining a dependency here, dms-fhir-store-blaze needs to be started manually
   dms-fhir-store-hapi:
-    image: hapiproject/hapi:v7.6.0
-    restart: "no"
+    image: hapiproject/hapi:v8.0.0
+    restart: 'no'
     ports:
       - 127.0.0.1:8082:8080
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
+      HAPI_FHIR_BINARY_STORAGE_ENABLED: 'true'
     networks:
       dms-bpe-backend:
         aliases:
           - dms-fhir-store
   dms-fhir-store-blaze:
-    image: samply/blaze:0.30.0
-    restart: "no"
+    image: samply/blaze:0.30.2
+    restart: 'no'
     ports:
       - 127.0.0.1:8082:8080
     environment:
       TZ: Europe/Berlin
+      BASE_URL: 'http://dms-fhir-store:8080'
     networks:
       dms-bpe-backend:
         aliases:
@@ -566,7 +572,7 @@ services:
 
   hrp-fhir:
     image: datasharingframework/fhir
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5003:5003
     secrets:
@@ -628,7 +634,7 @@ services:
 
   hrp-bpe:
     image: datasharingframework/bpe
-    restart: "no"
+    restart: 'no'
     ports:
       - 127.0.0.1:5013:5013
     secrets:

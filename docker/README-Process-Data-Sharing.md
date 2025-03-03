@@ -18,7 +18,7 @@ Add entries to your hosts file
 *A total of eight console windows are required. Start docker-compose commands for consoles 1 to 7 from
 sub-folder:* `mii-processes-test-setup/docker`
 
-Console 1: Start DIC1 HAPI FHIR store or DIC1 BLAZE FHIR store
+Console 1: Start DIC1 HAPI FHIR store or DIC1 FHIR store
 
 ```sh
 docker-compose up -d dic1-fhir-store-hapi && docker-compose logs -f dic1-fhir-store-hapi
@@ -40,7 +40,7 @@ Console 2: Start DIC1 DSF BPE server
 docker-compose up -d dic1-bpe && docker-compose logs -f dic1-fhir dic1-bpe
 ```
 
-Console 3: Start DIC2 HAPI FHIR store or DIC2 BLAZE FHIR store
+Console 3: Start DIC2 HAPI FHIR store or DIC2 FHIR store
 
 ```sh
 docker-compose up -d dic2-fhir-store-hapi && docker-compose logs -f dic2-fhir-store-hapi
@@ -62,7 +62,7 @@ Console 4: Start DIC2 DSF BPE server
 docker-compose up -d dic2-bpe && docker-compose logs -f dic2-fhir dic2-bpe
 ```
 
-Console 5: Start DMS HAPI FHIR store or DMS BLAZE FHIR store
+Console 5: Start DMS HAPI FHIR store or DMS FHIR store
 
 ```sh
 docker-compose up -d dms-fhir-store-hapi && docker-compose logs -f dms-fhir-store-hapi
@@ -103,7 +103,7 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 to be executed, the process plugin folder `mii-process-data-sharing` must be located next to the test setup folder 
 `mii-processes-test-setup`.
 
-Console 8: Execute Demo Transaction-Bundle for DIC1 HAPI FHIR server
+Console 8: Execute Demo Transaction-Bundle for DIC1 FHIR store
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
@@ -111,7 +111,7 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 http://localhost:8080/fhir
 ```
 
-Console 8: Execute Demo Transaction-Bundle for DIC2 HAPI FHIR server
+Console 8: Execute Demo Transaction-Bundle for DIC2 FHIR store
 
 ```sh
 ACCESS_TOKEN=$(curl -k -s -d 'grant_type=client_credentials' -u 'account:e11a3a8e-6e24-4f9d-b914-da7619e8b31f' \
