@@ -67,11 +67,30 @@ docker-compose up -d dms-bpe && docker-compose logs -f dms-fhir dms-bpe
 to be executed, the process plugin folder `mii-process-data-transfer` must be located next to the test setup folder
 `mii-processes-test-setup`.
 
-Console 5: Execute Demo Transaction-Bundle for DIC1 HAPI FHIR server
+Console 5: Execute Demo Transaction-Bundle for DIC1 FHIR store
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 -d @../mii-process-data-transfer/src/test/resources/fhir/Bundle/DicFhirStore_Demo_CSV.xml \
+http://localhost:8080/fhir
+```
+
+To test large data-sets, use the following commands to first create a Binary and then the corresponding
+DocumentReference resource on the DIC1 FHIR store
+
+```sh
+curl -H "Accept: application/xml+fhir" -H "Prefer: return=OperationOutcome" -H "Content-Type: application/x-ndjson" \
+--data-binary @../mii-process-data-transfer/src/test/resources/fhir/Bundle/result.ndjson \
+http://localhost:8080/fhir/Binary
+```
+
+Replace the Binary resource id in the file
+`../mii-process-data-transfer/src/test/resources/fhir/Bundle/DicFhirStore_Demo_LargeContent.xml` and execute it
+against the DIC1 FHIR store
+
+```sh
+curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
+-d @../mii-process-data-transfer/src/test/resources/fhir/Bundle/DicFhirStore_Demo_LargeContent.xml \
 http://localhost:8080/fhir
 ```
 
