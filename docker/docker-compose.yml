@@ -245,7 +245,6 @@ services:
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
-      HAPI_FHIR_BINARY_STORAGE_ENABLED: 'true'
     networks:
       dic1-bpe-backend:
         aliases:
@@ -397,7 +396,6 @@ services:
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
-      HAPI_FHIR_BINARY_STORAGE_ENABLED: 'true'
     networks:
       dic2-proxy:
         aliases:
@@ -552,7 +550,6 @@ services:
     environment:
       TZ: Europe/Berlin
       HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
-      HAPI_FHIR_BINARY_STORAGE_ENABLED: 'true'
     networks:
       dms-bpe-backend:
         aliases:

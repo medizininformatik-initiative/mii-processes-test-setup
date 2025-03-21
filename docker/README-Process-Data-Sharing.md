@@ -18,7 +18,7 @@ Add entries to your hosts file
 *A total of eight console windows are required. Start docker-compose commands for consoles 1 to 7 from
 sub-folder:* `mii-processes-test-setup/docker`
 
-Console 1: Start DIC1 HAPI FHIR store or DIC1 FHIR store
+Console 1: Start DIC1 HAPI FHIR store or DIC1 BLAZE FHIR store
 
 ```sh
 docker-compose up -d dic1-fhir-store-hapi && docker-compose logs -f dic1-fhir-store-hapi
@@ -40,7 +40,7 @@ Console 2: Start DIC1 DSF BPE server
 docker-compose up -d dic1-bpe && docker-compose logs -f dic1-fhir dic1-bpe
 ```
 
-Console 3: Start DIC2 HAPI FHIR store or DIC2 FHIR store
+Console 3: Start DIC2 HAPI FHIR store or DIC2 BLAZE FHIR store
 
 ```sh
 docker-compose up -d dic2-fhir-store-hapi && docker-compose logs -f dic2-fhir-store-hapi
@@ -62,7 +62,7 @@ Console 4: Start DIC2 DSF BPE server
 docker-compose up -d dic2-bpe && docker-compose logs -f dic2-fhir dic2-bpe
 ```
 
-Console 5: Start DMS HAPI FHIR store or DMS FHIR store
+Console 5: Start DMS HAPI FHIR store or DMS BLAZE FHIR store
 
 ```sh
 docker-compose up -d dms-fhir-store-hapi && docker-compose logs -f dms-fhir-store-hapi
