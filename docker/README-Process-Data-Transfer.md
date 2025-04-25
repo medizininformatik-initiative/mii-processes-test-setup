@@ -79,8 +79,8 @@ To test large data-sets, use the following commands to first create a Binary and
 DocumentReference resource on the DIC1 FHIR store
 
 ```sh
-curl -H "Accept: application/xml+fhir" -H "Prefer: return=OperationOutcome" -H "Content-Type: application/x-ndjson" \
---data-binary @../mii-process-data-transfer/src/test/resources/fhir/Bundle/result.ndjson \
+curl -v -X POST -H "Accept: application/fhir+xml" -H "Prefer: return=OperationOutcome" -H "Content-Type: application/x-ndjson" \
+-T ../mii-process-data-transfer/src/test/resources/fhir/Bundle/result.ndjson \
 http://localhost:8080/fhir/Binary
 ```
 
