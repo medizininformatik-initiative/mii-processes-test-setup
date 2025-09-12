@@ -103,7 +103,7 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 to be executed, the process plugin folder `mii-process-data-sharing` must be located next to the test setup folder 
 `mii-processes-test-setup`.
 
-Console 8: Execute Demo Transaction-Bundle for DIC1 HAPI FHIR server
+Console 8: Execute Demo Transaction-Bundle for DIC1 FHIR store
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
@@ -111,7 +111,7 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 http://localhost:8080/fhir
 ```
 
-Console 8: Execute Demo Transaction-Bundle for DIC2 HAPI FHIR server
+Console 8: Execute Demo Transaction-Bundle for DIC2 FHIR store
 
 ```sh
 ACCESS_TOKEN=$(curl -k -s -d 'grant_type=client_credentials' -u 'account:e11a3a8e-6e24-4f9d-b914-da7619e8b31f' \

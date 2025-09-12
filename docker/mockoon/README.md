@@ -1,0 +1,1 @@
+empty directory for mockoon config files
