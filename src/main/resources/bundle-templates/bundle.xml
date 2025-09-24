@@ -556,5 +556,41 @@
 			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|nct.dkfz.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|Test_DIC2"/>
 		</request>
 	</entry>
-
+	<entry>
+		<fullUrl value="urn:uuid:d1e64572-04b3-47c8-b302-fad7zh3nb33a"/>
+		<resource>
+			<OrganizationAffiliation xmlns="http://hl7.org/fhir">
+				<meta>
+					<profile value="http://dsf.dev/fhir/StructureDefinition/organization-affiliation"/>
+					<tag>
+						<system value="http://dsf.dev/fhir/CodeSystem/read-access-tag"/>
+						<code value="ALL"/>
+					</tag>
+				</meta>
+				<active value="true"/>
+				<organization>
+					<reference value="urn:uuid:dfeb9cbb-471d-49f9-8dcc-f7246ffa70ab"/>
+					<type value="Organization"/>
+				</organization>
+				<participatingOrganization>
+					<reference value="urn:uuid:bb73165c-c7b9-4342-8e28-531f07fa7735"/>
+					<type value="Organization"/>
+				</participatingOrganization>
+				<code>
+					<coding>
+						<system value="http://dsf.dev/fhir/CodeSystem/organization-role"/>
+						<code value="DMS"/>
+					</coding>
+				</code>
+				<endpoint>
+					<reference value="urn:uuid:b879e904-d666-45de-a995-accdd4429b79"/>
+					<type value="Endpoint"/>
+				</endpoint>
+			</OrganizationAffiliation>
+		</resource>
+		<request>
+			<method value="PUT"/>
+			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|nct.dkfz.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|Test_DMS"/>
+		</request>
+	</entry>
 </Bundle>
