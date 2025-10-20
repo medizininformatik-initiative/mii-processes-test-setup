@@ -13,7 +13,9 @@ services:
         medizininformatik-initiativede_dataReceive|1.1,
         medizininformatik-initiativede_reportReceive|1.0,
         medizininformatik-initiativede_reportReceive|1.1,
-        medizininformatik-initiativede_reportReceive|1.2
+        medizininformatik-initiativede_reportReceive|1.2,
+        medizininformatik-initiativede_feasibilityRequest|1.0,
+        medizininformatik-initiativede_feasibilityRequest|1.1
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_HRP_IDENTIFIER: 'Test_HRP'
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_ASYNC_ENABLED: 'true'
@@ -30,6 +32,33 @@ services:
       #DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_SERVER_BINARY_STREAM_READ_ENABLED: 'true'
       #DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_SERVER_BINARY_STREAM_READ_USE_HAPI_BLOB_STORAGE_OPERATION: 'true'
       #DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_DATALOGGINGENABLED: 'true'
+
+      # Feasibility Plugin 1.0.x.y
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_EVALUATION_OBFUSCATE: 'false'
+      ## using blaze
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_EVALUATION_STRATEGY: 'cql'
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_STORE_BASE_URL: http://dic1-fhir-store:8080/fhir
+      ## using flare
+      #DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_EVALUATION_STRATEGY: 'structured-query'
+      #DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_FLARE_BASE_URL: http://dic1-flare:8080
+      # Feasibility Plugin 1.1.x.y
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CONFIGURATION: |
+        stores:
+          my-store:
+            baseUrl: http://dic1-fhir-store:8080/fhir
+            evaluationStrategy: cql #using blaze
+            #baseUrl: http://dic1-flare:8080
+            #evaluationStrategy: ccdl #using flare
+        networks:
+          medizininformatik-initiative.de:
+            obfuscate: false
+            stores:
+            - my-store
+  
+  dic1-flare:
+    depends_on:
+      - dic1-fhir-store-blaze
+      #- dic1-fhir-store-hapi
 
   #dic2-fhir:
     # image: datasharingframework/fhir
@@ -48,7 +77,9 @@ services:
         medizininformatik-initiativede_dataReceive|1.1,
         medizininformatik-initiativede_reportReceive|1.0,
         medizininformatik-initiativede_reportReceive|1.1,
-        medizininformatik-initiativede_reportReceive|1.2
+        medizininformatik-initiativede_reportReceive|1.2,
+        medizininformatik-initiativede_feasibilityRequest|1.0,
+        medizininformatik-initiativede_feasibilityRequest|1.1
       DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_PROXY_URL: http://basic-auth-forward-proxy:8888
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_FHIR_SERVER_PROXY_USERNAME: proxy
@@ -99,6 +130,14 @@ services:
       #DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_SERVER_BINARY_STREAM_READ_USE_HAPI_BLOB_STORAGE_OPERATION: 'true'
       #DE_MEDIZININFORMATIK_INITIATIVE_DATA_SHARING_DIC_FHIR_DATALOGGINGENABLED: 'true'
 
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_STORE_TRUST_STORE_PATH: /run/secrets/keycloak_trust_certificates.p12
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_STORE_AUTH_OAUTH_ISSUER_URL: https://keycloak:8443/realms/blaze
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_STORE_AUTH_OAUTH_CLIENT_ID: account
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_STORE_AUTH_OAUTH_CLIENT_PASSWORD_FILE: /run/secrets/keycloak_client_secret.password
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_EVALUATION_STRATEGY: 'cql'
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_CLIENT_STORE_BASE_URL: http://dic1-fhir-store:8080/fhir
+      DE_MEDIZININFORMATIK_INITIATIVE_FEASIBILITY_DSF_PROCESS_EVALUATION_OBFUSCATE: 'false'
+
   #dms-fhir:
     #image: datasharingframework/fhir
   dms-bpe:
@@ -139,7 +178,9 @@ services:
         medizininformatik-initiativede_reportAutostart|1.2,
         medizininformatik-initiativede_reportSend|1.0,
         medizininformatik-initiativede_reportSend|1.1,
-        medizininformatik-initiativede_reportSend|1.2
+        medizininformatik-initiativede_reportSend|1.2,
+        medizininformatik-initiativede_feasibilityExecute|1.0,
+        medizininformatik-initiativede_feasibilityExecute|1.1
 
 secrets:
   keycloak_client_secret.password:

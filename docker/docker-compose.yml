@@ -261,6 +261,20 @@ services:
       dic1-bpe-backend:
         aliases:
           - dic1-fhir-store
+  dic1-flare:
+    image: ghcr.io/medizininformatik-initiative/flare:2.5.0
+    restart: 'no'
+    ports:
+    - 127.0.0.1:8180:8080
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8080/cache/stats" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+    environment:
+      FLARE_FHIR_SERVER: http://dic1-store-fhir-server:8080/fhir/
+    networks:
+      dic1-bpe-backend:
 
   dic2-fhir:
     image: ghcr.io/datasharingframework/fhir:1.9.0
@@ -341,6 +355,7 @@ services:
       - app_dic2_client_certificate.pem
       - app_dic2_client_certificate_private_key.pem
       - app_client_certificate_private_key.pem.password
+      - keycloak_trust_certificates.p12
     volumes:
       - type: bind
         source: ./dic2/bpe/process
