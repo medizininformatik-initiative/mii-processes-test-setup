@@ -7,6 +7,13 @@ if [[ $STATUS_CODE -ne 200 ]] ; then
   exit
 fi
 
+for file in setup/*.json
+do
+  echo ""
+  echo "Sending FHIR bundle $file ..."
+  curl -X POST -H "Content-Type: application/json" -d @"$file" "$1"
+done
+
 for file in data/*.json
 do
   echo ""
