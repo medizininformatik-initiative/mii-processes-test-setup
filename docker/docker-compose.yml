@@ -266,7 +266,7 @@ services:
         aliases:
           - dic1-fhir-store
   dic1-fhir-store-blaze:
-    image: samply/blaze:1.0.4
+    image: samply/blaze:1.6.0
     restart: 'no'
     ports:
       - 127.0.0.1:8080:8080
@@ -440,7 +440,7 @@ services:
         aliases:
           - dic2-fhir-store
   dic2-fhir-store-blaze:
-    image: samply/blaze:1.0.4
+    image: samply/blaze:1.6.0
     restart: 'no'
     ports:
       - 127.0.0.1:8081:8080
@@ -610,7 +610,7 @@ services:
         aliases:
           - dms-fhir-store
   dms-fhir-store-blaze:
-    image: samply/blaze:1.0.4
+    image: samply/blaze:1.6.0
     restart: 'no'
     ports:
       - 127.0.0.1:8082:8080
