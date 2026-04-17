@@ -121,7 +121,7 @@ services:
       internet:
 
   dic1-fhir:
-    image: ghcr.io/datasharingframework/fhir:2.0.2
+    image: ghcr.io/datasharingframework/fhir:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5000:5000
@@ -187,7 +187,7 @@ services:
       - proxy
 
   dic1-bpe:
-    image: ghcr.io/datasharingframework/bpe:2.0.2
+    image: ghcr.io/datasharingframework/bpe:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5010:5010
@@ -279,7 +279,7 @@ services:
           - dic1-fhir-store
 
   dic2-fhir:
-    image: ghcr.io/datasharingframework/fhir:2.0.2
+    image: ghcr.io/datasharingframework/fhir:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5001:5001
@@ -350,7 +350,7 @@ services:
       - basic-auth-forward-proxy
 
   dic2-bpe:
-    image: ghcr.io/datasharingframework/bpe:2.0.2
+    image: ghcr.io/datasharingframework/bpe:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5011:5011
@@ -463,7 +463,7 @@ services:
         condition: service_started
 
   dms-fhir:
-    image: ghcr.io/datasharingframework/fhir:2.0.2
+    image: ghcr.io/datasharingframework/fhir:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5002:5002
@@ -529,7 +529,7 @@ services:
       - proxy
 
   dms-bpe:
-    image: ghcr.io/datasharingframework/bpe:2.0.2
+    image: ghcr.io/datasharingframework/bpe:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5012:5012
@@ -623,7 +623,7 @@ services:
           - dms-fhir-store
 
   hrp-fhir:
-    image: ghcr.io/datasharingframework/fhir:2.0.2
+    image: ghcr.io/datasharingframework/fhir:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5003:5003
@@ -689,7 +689,7 @@ services:
       - proxy
 
   hrp-bpe:
-    image: ghcr.io/datasharingframework/bpe:2.0.2
+    image: ghcr.io/datasharingframework/bpe:2.1.0
     restart: 'no'
     ports:
       - 127.0.0.1:5013:5013
