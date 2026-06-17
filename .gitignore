@@ -11,15 +11,12 @@
 
 **/dependency-reduced-pom.xml
 
-###
-# test data generator ignores
-###
-cert/**/*.pem
-cert/**/*.csr
-cert/**/*.p12
-cert/thumbprints.txt
+cert/*.crt
+cert/*.key
+cert/*.p12
 
-bundle/*.xml
+key/*.key
+key/*.pub
 
 rsa/*.pem
 
@@ -30,12 +27,15 @@ docker/**/bpe/log/*.log
 docker/**/bpe/log/*.log.gz
 docker/**/bpe/process/*.jar
 
-docker/**/fhir/conf/bundle.xml
 docker/**/fhir/log/*.log
 docker/**/fhir/log/*.log.gz
 
-docker/secrets/*.pem
+docker/secrets/*.crt
+docker/secrets/*.jks
+docker/secrets/*.key
+docker/secrets/*.key.plain
 docker/secrets/*.p12
+docker/secrets/*.pub
 docker/.env
 docker/docker-compose.override.yml
 
