@@ -199,7 +199,7 @@
 							<keys>
 								<key>
 									<id>dms</id>
-									<type>RSA4096</type>
+									<type>X25519</type>
 									<targets>
 										<target>docker/secrets/dms-data.key.plain</target>
 										<target>docker/secrets/dms-data.pub</target>

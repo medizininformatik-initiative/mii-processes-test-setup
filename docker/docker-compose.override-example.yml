@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   #dic1-fhir:
     #image: datasharingframework/fhir
@@ -165,8 +164,8 @@ services:
         medizininformatik-initiativede_dataSend|2.0
 
       # Data-Transfer-2.x & Data-Sharing-2.x ENV variables
-      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PRIVATE_KEY: /run/secrets/dms_private_key.pem
-      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PUBLIC_KEY: /run/secrets/dms_public_key.pem
+      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PRIVATE_KEY_X25519: /run/secrets/dms_private_key.pem
+      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PUBLIC_KEY_X25519: /run/secrets/dms_public_key.pem
 
       # Data-Transfer-2.x ENV variables
       #DE_MEDIZININFORMATIK_INITIATIVE_DATA_TRANSFER_DMS_EMAIL_ENABLED: 'true'
