@@ -98,9 +98,6 @@
 				<executions>
 					<execution>
 						<id>default-cli</id>
-						<goals>
-							<goal>generate-dev-setup-cert-files</goal>
-						</goals>
 						<configuration>
 							<certs>
 								<cert>
