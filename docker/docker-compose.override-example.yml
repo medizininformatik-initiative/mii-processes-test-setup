@@ -165,6 +165,10 @@ services:
         medizininformatik-initiativede_dataSend|2.0
 
       # Data-Transfer-2.x & Data-Sharing-2.x ENV variables
+      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PRIVATE_KEY_X25519: /run/secrets/dms_private_key_x25519.pem
+      DE_MEDIZININFORMATIK_INITIATIVE_DMS_PUBLIC_KEY_X25519: /run/secrets/dms_public_key_x25519.pem
+
+      # Data-Transfer-1.x & Data-Sharing-1.x ENV variables
       DE_MEDIZININFORMATIK_INITIATIVE_DMS_PRIVATE_KEY: /run/secrets/dms_private_key.pem
       DE_MEDIZININFORMATIK_INITIATIVE_DMS_PUBLIC_KEY: /run/secrets/dms_public_key.pem
 

@@ -272,6 +272,7 @@ services:
       - 127.0.0.1:8080:8080
     environment:
       TZ: Europe/Berlin
+      JAVA_TOOL_OPTIONS: "-Xms5g -Xmx10g"
       BASE_URL: 'http://dic1-fhir-store:8080'
     networks:
       dic1-bpe-backend:
@@ -543,6 +544,8 @@ services:
       - app_client_certificate_private_key.pem.password
       - dms_private_key.pem
       - dms_public_key.pem
+      - dms_private_key_x25519.pem
+      - dms_public_key_x25519.pem
     volumes:
       - type: bind
         source: ./dms/bpe/process
@@ -833,7 +836,10 @@ secrets:
     file: ./secrets/dms_private_key.pem
   dms_public_key.pem:
     file: ./secrets/dms_public_key.pem
-
+  dms_private_key_x25519.pem:
+    file: ./secrets/dms_private_key_x25519.pem
+  dms_public_key_x25519.pem:
+    file: ./secrets/dms_public_key_x25519.pem
 
 networks:
   internet:
