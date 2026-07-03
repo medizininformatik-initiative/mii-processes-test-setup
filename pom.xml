@@ -131,10 +131,8 @@
 									</sans>
 									<type>SERVER</type>
 									<targets>
-										<target>
-											docker/secrets/keycloak.chain.crt</target>
-										<target>
-											docker/secrets/keycloak.key.plain</target>
+										<target>docker/secrets/keycloak.chain.crt</target>
+										<target>docker/secrets/keycloak.key.plain</target>
 									</targets>
 								</cert>
 								<cert>
@@ -180,6 +178,7 @@
 								<targets>
 									<target>docker/secrets/issuing_ca.crt</target>
 									<target>docker/secrets/keycloak_trust_store.jks</target>
+									<target>docker/secrets/keycloak_trust_store.crt</target>
 								</targets>
 							</issuingCa>
 							<caChain>
@@ -195,11 +194,19 @@
 							</templates>
 							<keys>
 								<key>
-									<id>dms</id>
+									<id>dms-rsa</id>
+									<type>RSA4096</type>
+									<targets>
+										<target>docker/secrets/dms-data-rsa4096.key.plain</target>
+										<target>docker/secrets/dms-data-rsa4096.pub</target>
+									</targets>
+								</key>
+								<key>
+									<id>dms-X25519</id>
 									<type>X25519</type>
 									<targets>
-										<target>docker/secrets/dms-data.key.plain</target>
-										<target>docker/secrets/dms-data.pub</target>
+										<target>docker/secrets/dms-data-x25519.key.plain</target>
+										<target>docker/secrets/dms-data-x25519.pub</target>
 									</targets>
 								</key>
 							</keys>
