@@ -16,7 +16,7 @@ Add entries to your hosts file
 ```
 
 *A total of eight console windows are required. Start docker-compose commands for consoles 1 to 7 from
-sub-folder:* `mii-processes-test-setup/docker`
+sub-folder:* `mii-processes-dev-setup/docker`
 
 Console 1: Start DIC1 HAPI FHIR store or DIC1 BLAZE FHIR store
 
@@ -99,9 +99,9 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 
 <!-- EXECUTE PROCESS -->
 
-*Start curl commands in console 8 from root-folder:* `mii-processes-test-setup`. In order for the commands 
+*Start curl commands in console 8 from root-folder:* `mii-processes-dev-setup`. In order for the commands 
 to be executed, the process plugin folder `mii-process-data-sharing` must be located next to the test setup folder 
-`mii-processes-test-setup`.
+`mii-processes-dev-setup`.
 
 Console 8: Execute Demo Transaction-Bundle for DIC1 FHIR store
 

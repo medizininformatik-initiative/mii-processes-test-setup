@@ -14,7 +14,7 @@ Add entries to your hosts file
 ```
 
 *A total of five console windows are required. Start docker-compose commands for consoles 1 to 3 from
-sub-folder:* `mii-processes-test-setup/docker`
+sub-folder:* `mii-processes-dev-setup/docker`
 
 Console 1: Start DIC1 HAPI FHIR store or DIC1 BLAZE FHIR store
 
@@ -53,7 +53,7 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 
 <!-- TESTDATA -->
 
-*Start commands in console 4 from sub-folder `mii-processes-test-setup/data`*
+*Start commands in console 4 from sub-folder `mii-processes-dev-setup/data`*
 *Unfortunately the testdata does not work with a HAPI FHIR server*
 
 Console 4: Download and insert data into DIC1 FHIR store
@@ -65,9 +65,9 @@ Console 4: Download and insert data into DIC1 FHIR store
 
 <!-- EXECUTE PROCESS -->
 
-*Start curl commands in console 5 from root-folder:* `mii-processes-test-setup`. In order for the commands
+*Start curl commands in console 5 from root-folder:* `mii-processes-dev-setup`. In order for the commands
 to be executed, the process plugin folder `mii-process-report` must be located next to the test setup folder
-`mii-processes-test-setup`.
+`mii-processes-dev-setup`.
 
 Console 5: Add the search Bundle to HRP DSF FHIR server
 
