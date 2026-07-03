@@ -12,7 +12,7 @@
 					</tag>
 				</meta>
 				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-certificate-thumbprint">
-					<valueString value="TODO"/>
+					<valueString value="${dev.dsf.fhir.server.organization.thumbprint.hrp}"/>
 				</extension>
 				<identifier>
 					<system value="http://dsf.dev/sid/organization-identifier"/>
@@ -42,7 +42,7 @@
 					</tag>
 				</meta>
 				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-certificate-thumbprint">
-					<valueString value="TODO"/>
+					<valueString value="${dev.dsf.fhir.server.organization.thumbprint.dms}"/>
 				</extension>
 				<identifier>
 					<system value="http://dsf.dev/sid/organization-identifier"/>
@@ -72,11 +72,11 @@
 					</tag>
 				</meta>
 				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-certificate-thumbprint">
-					<valueString value="TODO"/>
+					<valueString value="${dev.dsf.fhir.server.organization.thumbprint}"/>
 				</extension>
 				<identifier>
 					<system value="http://dsf.dev/sid/organization-identifier"/>
-					<value value="Test_DIC1"/>
+					<value value="${dev.dsf.fhir.server.organization.identifier.value}"/>
 				</identifier>
 				<active value="true"/>
 				<endpoint>
@@ -87,7 +87,7 @@
 		</resource>
 		<request>
 			<method value="PUT"/>
-			<url value="Organization?identifier=http://dsf.dev/sid/organization-identifier|Test_DIC1"/>
+			<url value="Organization?identifier=http://dsf.dev/sid/organization-identifier|${dev.dsf.fhir.server.organization.identifier.value}"/>
 		</request>
 	</entry>
 	<entry>
@@ -102,7 +102,7 @@
 					</tag>
 				</meta>
 				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-certificate-thumbprint">
-					<valueString value="TODO"/>
+					<valueString value="${dev.dsf.fhir.server.organization.thumbprint.dic2}"/>
 				</extension>
 				<identifier>
 					<system value="http://dsf.dev/sid/organization-identifier"/>
@@ -120,6 +120,7 @@
 			<url value="Organization?identifier=http://dsf.dev/sid/organization-identifier|Test_DIC2"/>
 		</request>
 	</entry>
+
 	<entry>
 		<fullUrl value="urn:uuid:b879e904-d666-45de-a995-accdd4429bgd"/>
 		<resource>
@@ -213,7 +214,7 @@
 				</meta>
 				<identifier>
 					<system value="http://dsf.dev/sid/endpoint-identifier"/>
-					<value value="Test_DIC1_Endpoint"/>
+					<value value="${dev.dsf.fhir.server.endpoint.identifier.value}"/>
 				</identifier>
 				<status value="active"/>
 				<connectionType>
@@ -232,12 +233,12 @@
 				</payloadType>
 				<payloadMimeType value="application/fhir+json"/>
 				<payloadMimeType value="application/fhir+xml"/>
-				<address value="https://dic1/fhir"/>
+				<address value="${dev.dsf.fhir.server.endpoint.address}"/>
 			</Endpoint>
 		</resource>
 		<request>
 			<method value="PUT"/>
-			<url value="Endpoint?identifier=http://dsf.dev/sid/endpoint-identifier|Test_DIC1_Endpoint"/>
+			<url value="Endpoint?identifier=http://dsf.dev/sid/endpoint-identifier|${dev.dsf.fhir.server.endpoint.identifier.value}"/>
 		</request>
 	</entry>
 	<entry>
@@ -280,6 +281,7 @@
 			<url value="Endpoint?identifier=http://dsf.dev/sid/endpoint-identifier|Test_DIC2_Endpoint"/>
 		</request>
 	</entry>
+
 	<entry>
 		<fullUrl value="urn:uuid:c4a7b553-01b1-4b50-bcb3-1467f5ae7802"/>
 		<resource>
@@ -326,6 +328,7 @@
 			<url value="Organization?identifier=http://dsf.dev/sid/organization-identifier|nct.dkfz.de"/>
 		</request>
 	</entry>
+
 	<entry>
 		<fullUrl value="urn:uuid:d1e64572-04b3-47c8-b302-c1776b5e42g5"/>
 		<resource>
@@ -440,7 +443,7 @@
 		</resource>
 		<request>
 			<method value="PUT"/>
-			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|medizininformatik-initiative.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|Test_DIC1"/>
+			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|medizininformatik-initiative.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|${dev.dsf.fhir.server.organization.identifier.value}"/>
 		</request>
 	</entry>
 	<entry>
@@ -480,8 +483,6 @@
 			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|medizininformatik-initiative.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|Test_DIC2"/>
 		</request>
 	</entry>
-
-
 	<entry>
 		<fullUrl value="urn:uuid:fde4fd9f-a86c-4d9c-bba0-f8b08da7be9f"/>
 		<resource>
@@ -516,7 +517,7 @@
 		</resource>
 		<request>
 			<method value="PUT"/>
-			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|nct.dkfz.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|Test_DIC1"/>
+			<url value="OrganizationAffiliation?primary-organization:identifier=http://dsf.dev/sid/organization-identifier|nct.dkfz.de&amp;participating-organization:identifier=http://dsf.dev/sid/organization-identifier|${dev.dsf.fhir.server.organization.identifier.value}"/>
 		</request>
 	</entry>
 	<entry>

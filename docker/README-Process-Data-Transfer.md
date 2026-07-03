@@ -1,9 +1,9 @@
 # Process Data-Transfer
 
-Build the project from the root directory of this repository by executing the following command.
+Generate user specific dev setup files by executing.
 
 ```sh
-mvn clean package
+mvn dsf:generate-dev-setup-cert-files
 ```
 
 Add entries to your hosts file
@@ -102,9 +102,9 @@ example starter class with name* `DataSendExampleStarter` *in* `../mii-process-d
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 -d @../mii-process-data-transfer/src/test/resources/fhir/Task/TaskDataSendStart_Demo_CSV.xml \
---ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
---cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
---key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
+--ssl-no-revoke --cacert cert/DSF_DEV_Root_CA.crt \
+--cert cert/Webbrowser_Test_User.crt \
+--key cert/Webbrowser_Test_User.key \
 --pass password \
 https://dic1/fhir/Task
 ```

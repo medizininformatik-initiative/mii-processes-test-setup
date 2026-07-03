@@ -1,9 +1,9 @@
 # Process Data-Sharing
 
-Build the project from the root directory of this repository by executing the following command.
+Generate user specific dev setup files by executing.
 
 ```sh
-mvn clean package
+mvn dsf:generate-dev-setup-cert-files
 ```
 
 Add entries to your hosts file
@@ -130,10 +130,9 @@ example starter class with name* `CoordinateDataSharingExampleStarter` *in* `../
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 -d @../mii-process-data-sharing/src/test/resources/fhir/Task/TaskCoordinateDataSharing_Demo_Bundle.xml \
---ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
---cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
---key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
---pass password \
+--ssl-no-revoke --cacert cert/DSF_DEV_Root_CA.crt \
+--cert cert/Webbrowser_Test_User.crt \
+--key cert/Webbrowser_Test_User.key \
 https://hrp/fhir/Task
 ```
 
@@ -152,9 +151,9 @@ console 8 : Check if the Task starting the coordination process at the HRP conta
             code `data-set-location` containing the URL inserted as part of the user-task at the DMS 
 ```sh
 curl -H "Accept: application/xml+fhir" \
---ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
---cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
---key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
+--ssl-no-revoke --cacert cert/DSF_DEV_Root_CA.crt \
+--cert cert/Webbrowser_Test_User.crt \
+--key cert/Webbrowser_Test_User.key \
 --pass password \
 https://hrp/fhir/Task?_sort=-_lastUpdated
 ```
