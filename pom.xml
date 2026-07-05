@@ -202,7 +202,7 @@
 									</targets>
 								</key>
 								<key>
-									<id>dms-X25519</id>
+									<id>dms-x25519</id>
 									<type>X25519</type>
 									<targets>
 										<target>docker/secrets/dms-data-x25519.key.plain</target>
