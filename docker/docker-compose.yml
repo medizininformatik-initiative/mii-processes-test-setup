@@ -555,10 +555,10 @@ services:
       - dms.crt
       - dms.key
       - ca_chain.crt
-      - dms_private_key_rsa.pem
-      - dms_public_key_rsa.pem
-      - dms_private_key_x25519.pem
-      - dms_public_key_x25519.pem
+      - dms-rsa4096.key.plain
+      - dms-rsa4096.pub
+      - dms-x25519.key.plain
+      - dms-x25519.pub
     volumes:
       - type: bind
         source: ./dms/bpe/process
@@ -771,8 +771,6 @@ secrets:
     file: ./secrets/keycloak.chain.crt
   keycloak.key.plain:
     file: ./secrets/keycloak.key.plain
-  keycloak_trust_store.pem:
-    file: ./secrets/keycloak_trust_store.crt
   keycloak_trust_store.jks:
     file: ./secrets/keycloak_trust_store.jks
   keycloak_client_secret.password:
@@ -843,14 +841,14 @@ secrets:
   db_hrp_bpe_user_engine.password:
     file: ./secrets/db_hrp_bpe_user_engine.password
 
-  dms_private_key_rsa.pem:
-    file: ./secrets/dms-data-rsa4096.key.plain
-  dms_public_key_rsa.pem:
-    file: ./secrets/dms-data-rsa4096.pub
-  dms_private_key_x25519.pem:
-    file: ./secrets/dms-data-x25519.key.plain
-  dms_public_key_x25519.pem:
-    file: ./secrets/dms-data-x25519.pub
+  dms-rsa4096.key.plain:
+    file: ./secrets/dms-rsa4096.key.plain
+  dms-rsa4096.pub:
+    file: ./secrets/dms-rsa4096.pub
+  dms-x25519.key.plain:
+    file: ./secrets/dms-x25519.key.plain
+  dms-x25519.pub:
+    file: ./secrets/dms-x25519.pub
 
 networks:
   dic1-fhir-frontend:
