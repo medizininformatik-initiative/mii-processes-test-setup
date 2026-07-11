@@ -1,9 +1,9 @@
 # Process Data-Sharing
 
-Build the project from the root directory of this repository by executing the following command.
+Generate user specific dev setup files by executing.
 
 ```sh
-mvn clean package
+mvn dsf:generate-dev-setup-cert-files
 ```
 
 Add entries to your hosts file
@@ -16,7 +16,7 @@ Add entries to your hosts file
 ```
 
 *A total of eight console windows are required. Start docker-compose commands for consoles 1 to 7 from
-sub-folder:* `mii-processes-test-setup/docker`
+sub-folder:* `mii-processes-dev-setup/docker`
 
 Console 1: Start DIC1 HAPI FHIR store or DIC1 BLAZE FHIR store
 
@@ -99,9 +99,9 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 
 <!-- EXECUTE PROCESS -->
 
-*Start curl commands in console 8 from root-folder:* `mii-processes-test-setup`. In order for the commands 
+*Start curl commands in console 8 from root-folder:* `mii-processes-dev-setup`. In order for the commands 
 to be executed, the process plugin folder `mii-process-data-sharing` must be located next to the test setup folder 
-`mii-processes-test-setup`.
+`mii-processes-dev-setup`.
 
 Console 8: Execute Demo Transaction-Bundle for DIC1 FHIR store
 
@@ -130,10 +130,9 @@ example starter class with name* `CoordinateDataSharingExampleStarter` *in* `../
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 -d @../mii-process-data-sharing/src/test/resources/fhir/Task/TaskCoordinateDataSharing_Demo_Bundle.xml \
---ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
---cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
---key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
---pass password \
+--ssl-no-revoke --cacert cert/DSF_DEV_Root_CA.crt \
+--cert cert/Webbrowser_Test_User.crt \
+--key cert/Webbrowser_Test_User.key \
 https://hrp/fhir/Task
 ```
 
@@ -152,9 +151,9 @@ console 8 : Check if the Task starting the coordination process at the HRP conta
             code `data-set-location` containing the URL inserted as part of the user-task at the DMS 
 ```sh
 curl -H "Accept: application/xml+fhir" \
---ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
---cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
---key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
+--ssl-no-revoke --cacert cert/DSF_DEV_Root_CA.crt \
+--cert cert/Webbrowser_Test_User.crt \
+--key cert/Webbrowser_Test_User.key \
 --pass password \
 https://hrp/fhir/Task?_sort=-_lastUpdated
 ```

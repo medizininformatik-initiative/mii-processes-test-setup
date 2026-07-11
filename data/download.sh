@@ -1,6 +1,7 @@
 #!/bin/sh
+set -e
 
-wget -O data.zip "https://health-atlas.de/data_files/594/download?version=1"
+curl --fail -o data.zip "https://health-atlas.de/data_files/594/download?version=1"
 unzip data.zip
 
 mkdir data

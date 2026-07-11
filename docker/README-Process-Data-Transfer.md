@@ -1,9 +1,9 @@
 # Process Data-Transfer
 
-Build the project from the root directory of this repository by executing the following command.
+Generate user specific dev setup files by executing.
 
 ```sh
-mvn clean package
+mvn dsf:generate-dev-setup-cert-files
 ```
 
 Add entries to your hosts file
@@ -14,7 +14,7 @@ Add entries to your hosts file
 ```
 
 *A total of five console windows are required. Start docker-compose commands for consoles 1 to 4 from
-sub-folder:* `mii-processes-test-setup/docker`
+sub-folder:* `mii-processes-dev-setup/docker`
 
 Console 1: Start DIC1 HAPI FHIR store or DIC1 BLAZE FHIR store
 
@@ -63,9 +63,9 @@ docker-compose up -d dms-bpe && docker-compose logs -f dms-fhir dms-bpe
 
 <!-- EXECUTE PROCESS -->
 
-*Start curl commands in console 5 from root-folder:* `mii-processes-test-setup`. In order for the commands
+*Start curl commands in console 5 from root-folder:* `mii-processes-dev-setup`. In order for the commands
 to be executed, the process plugin folder `mii-process-data-transfer` must be located next to the test setup folder
-`mii-processes-test-setup`.
+`mii-processes-dev-setup`.
 
 Console 5: Execute Demo Transaction-Bundle for DIC1 FHIR store
 
@@ -102,9 +102,9 @@ example starter class with name* `DataSendExampleStarter` *in* `../mii-process-d
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 -d @../mii-process-data-transfer/src/test/resources/fhir/Task/TaskDataSendStart_Demo_CSV.xml \
---ssl-no-revoke --cacert cert/ca/testca_certificate.pem \
---cert cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
---key cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
+--ssl-no-revoke --cacert cert/DSF_DEV_Root_CA.crt \
+--cert cert/Webbrowser_Test_User.crt \
+--key cert/Webbrowser_Test_User.key \
 --pass password \
 https://dic1/fhir/Task
 ```
