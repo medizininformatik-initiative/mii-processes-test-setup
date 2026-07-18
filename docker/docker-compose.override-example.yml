@@ -17,7 +17,8 @@ services:
         medizininformatik-initiativede_reportReceive|1.0,
         medizininformatik-initiativede_reportReceive|1.1,
         medizininformatik-initiativede_reportReceive|1.2,
-        medizininformatik-initiativede_reportReceive|2.0
+        medizininformatik-initiativede_reportReceive|2.0,
+        medizininformatik-initiativede_feasibilityRequest|0.0
 
       # Report-2.x ENV variables
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_EMAIL_ENABLED: 'true'
@@ -72,7 +73,8 @@ services:
         medizininformatik-initiativede_reportReceive|1.0,
         medizininformatik-initiativede_reportReceive|1.1,
         medizininformatik-initiativede_reportReceive|1.2,
-        medizininformatik-initiativede_reportReceive|2.0
+        medizininformatik-initiativede_reportReceive|2.0,
+        medizininformatik-initiativede_feasibilityRequest|0.0
 
       # Report-2.x ENV variables
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_DIC_EMAIL_ENABLED: 'true'
@@ -208,7 +210,8 @@ services:
         medizininformatik-initiativede_reportSend|1.0,
         medizininformatik-initiativede_reportSend|1.1,
         medizininformatik-initiativede_reportSend|1.2,
-        medizininformatik-initiativede_reportSend|2.0
+        medizininformatik-initiativede_reportSend|2.0,
+        medizininformatik-initiativede_feasibilityExecute|0.0
 
       # Report 2.x ENV variables
       #DE_MEDIZININFORMATIK_INITIATIVE_REPORT_HRP_EMAIL_ENABLED: 'true'
