@@ -71,7 +71,7 @@ ACCESS_TOKEN=$(curl -k -s -d 'grant_type=client_credentials' -u 'account:e11a3a8
 https://localhost:8443/realms/blaze/protocol/openid-connect/token | jq -r .access_token)
 
 curl -H "Accept: application/fhir+xml" -H "Content-Type: application/fhir+xml" --oauth2-bearer "${ACCESS_TOKEN}" \
--d @../mii-process-data-sharing/src/test/resources/fhir/Bundle/Dic2FhirStore_Demo_Bundle.xml \
+-d @../mii-process-data-sharing/src/test/resources/fhir/Bundle/Dic2FhirStore_Demo_CSV.xml \
 http://localhost:8081/fhir
 ```
 
@@ -134,22 +134,29 @@ docker-compose up -d hrp-bpe && docker-compose logs -f hrp-fhir hrp-bpe
 
 Open [https://hrp/fhir/Task?_sort=_profile,identifier&status=draft&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/task-coordinate-data-sharing|2.0](https://hrp/fhir/Task?_sort=_profile,identifier&status=draft&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/task-coordinate-data-sharing|2.0), select the process to be executed, add the inputs, and start the process.
 
-Execute DIC1 user-task to release data-set for DMS based on the URL in the log output of dic1-bpe.
+Execute DIC1 user-task to release data-set for DMS based on the URL in the log output of dic1-bpe by opening [https://dic1/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress](https://dic1/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress).
 
-Execute DIC2 user-task to release data-set for DMS based on the URL in the log output of dic2-bpe.
+Execute DIC2 user-task to release data-set for DMS based on the URL in the log output of dic2-bpe by opening [https://dic2/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress](https://dic1/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress).
 
-Check transferred data to DMS (2 DocumentReferences expected):
+Check transferred metadata to DMS (2 DocumentReferences expected):
 
 ```sh
 curl -H "Accept: application/fhir+xml" \
 http://localhost:8082/fhir/DocumentReference?identifier=Test_PROJECT_Bundle
 ```
 
-Execute HRP user-task to release consolidation of data-set for DSM based on the URL in the log output of hrp-bpe.
+Extract each `DocumentReference.content.attachment.url` and also check the transferred medical data to DMS:
 
-Execute DMS user-task to release merged data-set for HRP based on the URL in the log output of dms-bpe.
+```sh
+curl -H "Accept: application/fhir+xml" \
+http://localhost:8082/fhir/TO-BE-REPLACED-WITH-REFERENCE
+```
 
-Check if the Task starting the coordination process at the HRP contains a Task.output with code `data-set-location` containing the URL inserted as part of the user-task at the DMS.
+Execute HRP user-task to release consolidation of data-set for DSM based on the URL in the log output of hrp-bpe by opening [https://hrp/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress](https://dic1/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress)
+
+Execute DMS user-task to release merged data-set for HRP based on the URL in the log output of dms-bpe by opening [https://dms/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress](https://dic1/fhir/QuestionnaireResponse?_sort=-_lastUpdated&status=in-progress)
+
+Check if the Task starting the coordination process at the HRP contains a `Task.output with code `data-set-location` containing the URL inserted as part of the user-task at the DMS.
 
 ## End
 

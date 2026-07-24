@@ -208,6 +208,7 @@ services:
       - db_dic1_bpe_user.password
       - db_dic1_bpe_user_engine.password
       - root_ca.crt
+      - root_ca.p12
       - dic1.crt
       - dic1.key
       - ca_chain.crt
@@ -372,6 +373,7 @@ services:
       - db_dic2_bpe_user.password
       - db_dic2_bpe_user_engine.password
       - root_ca.crt
+      - root_ca.p12
       - dic2.crt
       - dic2.key
       - ca_chain.crt

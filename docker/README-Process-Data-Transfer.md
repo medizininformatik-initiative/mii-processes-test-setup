@@ -95,11 +95,18 @@ docker-compose up -d dms-bpe && docker-compose logs -f dms-fhir dms-bpe
 
 Open [https://dic1/fhir/Task?_sort=_profile,identifier&status=draft&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/task-data-send-start|2.0](https://dic1/fhir/Task?_sort=_profile,identifier&status=draft&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/task-data-send-start|2.0), select the process to be executed, add inputs if needed, and start the process.
 
-Check transferred data to DMS:
+Check transferred metadata to DMS:
 
 ```sh
 curl -H "Accept: application/fhir+xml" \
 http://localhost:8082/fhir/DocumentReference?identifier=Test_PROJECT_Bundle
+```
+
+Extract the `DocumentReference.content.attachment.url` and also check the transferred medical data to DMS:
+
+```sh
+curl -H "Accept: application/fhir+xml" \
+http://localhost:8082/fhir/TO-BE-REPLACED-WITH-REFERENCE
 ```
 
 ## End

@@ -115,7 +115,7 @@ https://hrp/fhir/
 
 Open [https://hrp/fhir/Task?_sort=_profile,identifier&status=draft&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/feasibility-task-request|0.0](https://hrp/fhir/Task?_sort=_profile,identifier&status=draft&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/feasibility-task-request|0.0), select the process to be executed, add the Measure reference from the Bundle response above, and start the process.
 
-Check feasibility result at HRP by reloading the task after process execution finished.
+Check feasibility result at HRP by reloading the task after process execution finished and opening [https://hrp/fhir/Task?_sort=-_lastUpdated&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/feasibility-task-single-dic-result|0.0](https://hrp/fhir/Task?_sort=-_lastUpdated&_profile=http://medizininformatik-initiative.de/fhir/StructureDefinition/feasibility-task-single-dic-result|0.0)
 
 ## End
 
